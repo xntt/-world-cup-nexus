@@ -1,0 +1,24 @@
+{
+  "last_update": "2026-02-09",
+  "brands": [
+    {
+      "id": "1win",
+      "name": "1win Official",
+      "logo": "https://path-to-logo.png",
+      "promo_code": "CUP2026",
+      "link": "https://1win.com/aff123",
+      "bonus_text": "500% Welcome Bonus",
+      "priority_geo": ["MX", "BR", "CI"]
+    },
+    {
+      "id": "stake",
+      "name": "Stake Crypto",
+      "logo": "https://path-to-stake-logo.png",
+      "promo_code": "STAKE_MAX",
+      "link": "https://stake.com/?aff=456",
+      "bonus_text": "$1000 Crypto Match",
+      "priority_geo": ["US", "CA"]
+    }
+    // ... 后续 Agent 增加到 10+ 个
+  ]
+}
