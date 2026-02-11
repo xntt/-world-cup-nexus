@@ -29,7 +29,7 @@ def update_sites_config():
 
     # 读取你想要添加的新域名列表 (可以是从 csv 读取，这里模拟直接添加)
     # 实际操作中，你可以上传一个 new_domains.txt 让 Agent 读取
-    new_domains = ["mx-bet.yourdomain.com", "loan-usa.yourdomain.com"] 
+    new_domains = ["mx.worldcup-guide.com", "loan-usa.yourdomain.com"] 
 
     for domain in new_domains:
         if domain not in data:
