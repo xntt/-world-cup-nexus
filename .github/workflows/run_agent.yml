@@ -1,59 +1,60 @@
 name: Auto Manager Agent
 
 on:
-  # 允许手动点击按钮运行 (测试用)
+  # 允许手动点击按钮运行
   workflow_dispatch:
-  # 设置定时任务 (例如每12小时运行一次)
+  # 定时任务：每12小时运行一次
   schedule:
     - cron: '0 */12 * * *'
 
-# 赋予写权限，否则 Agent 无法修改 json 文件并保存
+# 赋予写权限，否则无法提交代码
 permissions:
   contents: write
 
 jobs:
-  run-agent:
+  manage-sites:
     runs-on: ubuntu-latest
     
     steps:
-      # 1. 拉取代码到虚拟机
-      - name: Checkout repository
+      # 1. 拉取代码
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2. 安装 Python 环境
+      # 2. 设置 Python 环境
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
 
-      # 3. 安装依赖库 (读取 requirements.txt)
-      - name: Install dependencies
+      # 3. 安装依赖 (requests 等)
+      - name: Install libraries
         run: |
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      # 4. 运行你的 Agent 脚本
-      - name: Run Manager Script
+      # 4. 运行 Agent 脚本
+      - name: Run Agent Script
         env:
-          # 这里读取你在 GitHub Settings 里设置的 Secrets
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
           CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
           CF_PROJECT_NAME: ${{ secrets.CF_PROJECT_NAME }}
         run: python manager.py
 
-      # 5. 如果 json 文件有变化，提交回仓库
-   - name: Commit and Push changes
+      # 5. 提交并推送到 GitHub (包含冲突修复)
+      - name: Commit and Push changes
         run: |
+          # 配置 Git 用户身份
           git config --global user.name 'AI Agent Bot'
           git config --global user.email 'bot@noreply.com'
           
-          # 先把生成的文件加入暂存区
+          # 添加生成的文件到暂存区
           git add sites.json content_pool.json
           
-          # 尝试提交
-          git commit -m "Agent auto-update: new content generated" || echo "No changes to commit"
+          # 尝试提交 (如果没有变化，这步会跳过，不会报错)
+          git commit -m "Agent update: auto-generated content" || echo "No changes to commit"
           
-          # 【关键修复】推送到远程之前，先拉取最新代码并合并
+          # 【关键修复】推送到远程之前，强制拉取最新代码并合并
+          # 注意：如果你的主分支叫 master，请把下面的 main 改成 master
           git pull --rebase origin main
           
-          # 再次推送
+          # 推送到远程仓库
           git push origin main
