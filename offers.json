@@ -1,24 +1,22 @@
-{
-  "last_update": "2026-02-09",
-  "brands": [
-    {
-      "id": "1win",
-      "name": "1win Official",
-      "logo": "https://path-to-logo.png",
-      "promo_code": "CUP2026",
-      "link": "https://1win.com/aff123",
-      "bonus_text": "500% Welcome Bonus",
-      "priority_geo": ["MX", "BR", "CI"]
-    },
-    {
-      "id": "stake",
-      "name": "Stake Crypto",
-      "logo": "https://path-to-stake-logo.png",
-      "promo_code": "STAKE_MAX",
-      "link": "https://stake.com/?aff=456",
-      "bonus_text": "$1000 Crypto Match",
-      "priority_geo": ["US", "CA"]
-    }
-    // ... 后续 Agent 增加到 10+ 个
-  ]
-}
+[
+  {
+    "id": "1win_mx",
+    "name": "1win México",
+    "logo": "https://i.imgur.com/example_1win.png", 
+    "link": "https://1win.com/register?promo=CUP2026",
+    "bonus": "500% de Bono + 70 Giros Gratis",
+    "rating": 4.9,
+    "tags": ["Pagos Rápidos", "Cripto", "App Móvil"],
+    "geo": ["MX", "AR", "CO"]
+  },
+  {
+    "id": "stake_global",
+    "name": "Stake.com",
+    "logo": "https://i.imgur.com/example_stake.png",
+    "link": "https://stake.com/?c=promo",
+    "bonus": "Rakeback Diario del 5%",
+    "rating": 4.8,
+    "tags": ["VIP Club", "Sin Límites"],
+    "geo": ["Global"]
+  }
+]
