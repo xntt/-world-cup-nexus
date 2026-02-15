@@ -1,6 +1,6 @@
 [
   {
-    "id": "site_2bahh2",
+    "id": "site_jsmo9s",
     "hostname": "mx.worldcup-guide.com",
     "name": "Best Casino Deals 2026",
     "theme": "cyberpunk",
@@ -22,7 +22,7 @@
     ]
   },
   {
-    "id": "site_vjg1dw",
+    "id": "site_w33mun",
     "hostname": "loan-usa.worldcup-guide.com",
     "name": "Best Finance Deals 2026",
     "theme": "modern",
@@ -40,75 +40,6 @@
     },
     "offer_ids": [
       "bet365_mx"
-    ]
-  },
-  {
-    "id": "site_pvalck",
-    "hostname": "mx.worldcup-guide.com",
-    "name": "Best Casino Deals 2026",
-    "theme": "cyberpunk",
-    "layout_order": [
-      "hero",
-      "offers",
-      "seo"
-    ],
-    "list_style": "grid",
-    "hero": {
-      "title": "Top Casino Offers",
-      "subtitle": "Exclusive 2026 World Cup Deals",
-      "cta_text": "Check Offers",
-      "background_image": "https://images.unsplash.com/photo-1518546305927-5a555bb7020d?auto=format&fit=crop&w=1920&q=80"
-    },
-    "offer_ids": [
-      "1win_global",
-      "stake_us"
-    ]
-  },
-  {
-    "id": "site_nzmrg4",
-    "hostname": "loan-usa.worldcup-guide.com",
-    "name": "Best Finance Deals 2026",
-    "theme": "modern",
-    "layout_order": [
-      "offers",
-      "hero",
-      "seo"
-    ],
-    "list_style": "table",
-    "hero": {
-      "title": "Top Finance Offers",
-      "subtitle": "Exclusive 2026 World Cup Deals",
-      "cta_text": "Check Offers",
-      "background_image": "https://images.unsplash.com/photo-1518546305927-5a555bb7020d?auto=format&fit=crop&w=1920&q=80"
-    },
-    "offer_ids": [
-      "bet365_mx"
-    ]
-  }
-]
-[
-  {
-    "hostname": "mx-bet.yourdomain.com", 
-    "theme": "royal", 
-    "layout_order": ["hero", "offers", "seo", "faq"],  // 
-    
-    "hero": {
-      "title": "Apuestas Copa Mundial 2026",
-      "subtitle": "Los mejores bonos para fans mexicanos",
-      "cta_text": "Ver Ofertas",
-      "background_image": "https://source.unsplash.com/random/1920x1080/?soccer,stadium"
-    },
-    
-    "offer_ids": ["1win_mx", "stake_global"], // 
-    
-    "seo_content": {
-      "title": "¿Cómo elegir el mejor casino?",
-      "body": "Para los jugadores en México, es crucial buscar licencias validadas..."
-    },
-    
-    "faq": [  // 
-      {"q": "¿Es legal apostar en línea?", "a": "Sí, utilizando plataformas internacionales..."},
-      {"q": "¿Cómo deposito pesos?", "a": "Usa SPEI o OXXO en 1win..."}
     ]
   }
 ]
