@@ -1,6 +1,6 @@
 [
   {
-    "id": "1win_global",
+    "id": "test_offer_1",
     "name": "Test Casino 1",
     "logo": "https://placehold.co/100x100",
     "link": "#",
@@ -9,7 +9,7 @@
     "tags": ["Test Tag"]
   },
   {
-    "id": "bet365_mx",
+    "id": "test_offer_2",
     "name": "Test Casino 2",
     "logo": "https://placehold.co/100x100",
     "link": "#",
