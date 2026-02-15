@@ -1,45 +1,18 @@
 [
   {
-    "id": "site_d69seo",
     "hostname": "mx.worldcup-guide.com",
-    "name": "Best Casino Deals 2026",
-    "theme": "cyberpunk",
-    "layout_order": [
-      "hero",
-      "offers",
-      "seo"
-    ],
-    "list_style": "grid",
+    "theme": "royal",
+    "layout_order": ["hero", "offers", "seo"], 
     "hero": {
-      "title": "Top Casino Offers",
-      "subtitle": "Exclusive 2026 World Cup Deals",
-      "cta_text": "Check Offers",
-      "background_image": "https://images.unsplash.com/photo-1518546305927-5a555bb7020d?auto=format&fit=crop&w=1920&q=80"
+      "title": "TEST TITLE",
+      "subtitle": "If you see this, config is working.",
+      "cta_text": "Click Me",
+      "background_image": "https://source.unsplash.com/random/1920x1080/?casino"
     },
-    "offer_ids": [
-      "1win_global",
-      "stake_us"
-    ]
-  },
-  {
-    "id": "site_nkug3e",
-    "hostname": "loan-usa.worldcup-guide.com",
-    "name": "Best Finance Deals 2026",
-    "theme": "modern",
-    "layout_order": [
-      "offers",
-      "hero",
-      "seo"
-    ],
-    "list_style": "table",
-    "hero": {
-      "title": "Top Finance Offers",
-      "subtitle": "Exclusive 2026 World Cup Deals",
-      "cta_text": "Check Offers",
-      "background_image": "https://images.unsplash.com/photo-1518546305927-5a555bb7020d?auto=format&fit=crop&w=1920&q=80"
-    },
-    "offer_ids": [
-      "bet365_mx"
-    ]
+    "offer_ids": ["test_offer_1", "test_offer_2"], 
+    "seo_content": {
+      "title": "SEO Section Working",
+      "body": "This is the text body."
+    }
   }
 ]
