@@ -7,7 +7,8 @@
     "layout_order": [
       "hero",
       "offers",
-      "seo"
+      "seo"，
+      "faq"
     ],
     "list_style": "grid",
     "hero": {
@@ -29,7 +30,8 @@
     "layout_order": [
       "offers",
       "hero",
-      "seo"
+      "seo"，
+      "faq"
     ],
     "list_style": "table",
     "hero": {
