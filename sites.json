@@ -1,20 +1,18 @@
 [
   {
-    "id": "test_offer_1",
-    "name": "Test Casino 1",
-    "logo": "https://placehold.co/100x100",
-    "link": "#",
-    "bonus": "$1000 Bonus",
-    "rating": 5.0,
-    "tags": ["Test Tag"]
-  },
-  {
-    "id": "test_offer_2",
-    "name": "Test Casino 2",
-    "logo": "https://placehold.co/100x100",
-    "link": "#",
-    "bonus": "500 Free Spins",
-    "rating": 4.5,
-    "tags": ["Crypto"]
+    "hostname": "mx.worldcup-guide.com",
+    "theme": "royal",
+    "layout_order": ["hero", "offers", "seo"], 
+    "hero": {
+      "title": "TEST TITLE",
+      "subtitle": "If you see this, config is working.",
+      "cta_text": "Click Me",
+      "background_image": "https://source.unsplash.com/random/1920x1080/?casino"
+    },
+    "offer_ids": ["test_offer_1", "test_offer_2"], 
+    "seo_content": {
+      "title": "SEO Section Working",
+      "body": "This is the text body."
+    }
   }
 ]
