@@ -1,7 +1,5 @@
 [
-  { "id": 1, "name": "NeonVegas", "logo": "https://picsum.photos/id/1/100/100", "rating": 4.8, "bonus": "500% up to $1000", "link": "#", "tags": ["Crypto", "Instant Payout"], "description": "The future of gaming is here.", "backgroundImage": "https://picsum.photos/id/14/600/400" },
-  { "id": 2, "name": "Royal Palace", "logo": "https://picsum.photos/id/2/100/100", "rating": 4.9, "bonus": "$500 Welcome Package", "link": "#", "tags": ["VIP Program", "High Roller"], "description": "Treatment fit for a king.", "backgroundImage": "https://picsum.photos/id/25/600/400" },
-  { "id": 3, "name": "SpinCity", "logo": "https://picsum.photos/id/3/100/100", "rating": 4.5, "bonus": "100 Free Spins", "link": "#", "tags": ["Slots Focus", "Mobile Ready"], "description": "Spin to win on mobile.", "backgroundImage": "https://picsum.photos/id/37/600/400" },
-  { "id": 4, "name": "CyberBet", "logo": "https://picsum.photos/id/4/100/100", "rating": 4.2, "bonus": "1 BTC First Deposit", "link": "#", "tags": ["Esports", "Live Betting"], "description": "Bet on the digital frontier.", "backgroundImage": "https://picsum.photos/id/48/600/400" },
-  { "id": 5, "name": "JackpotJoy", "logo": "https://picsum.photos/id/5/100/100", "rating": 4.6, "bonus": "Double Your Money", "link": "#", "tags": ["Jackpots", "Bingo"], "description": "Huge community jackpots.", "backgroundImage": "https://picsum.photos/id/59/600/400" }
+  { "id": 1win_global, "name": "NeonVegas", "logo": "https://picsum.photos/id/1/100/100", "rating": 4.8, "bonus": "500% up to $1000", "link": "#", "tags": ["Crypto", "Instant Payout"], "description": "The future of gaming is here.", "backgroundImage": "https://picsum.photos/id/14/600/400" },
+  { "id": bet365_mx, "name": "Royal Palace", "logo": "https://picsum.photos/id/2/100/100", "rating": 4.9, "bonus": "$500 Welcome Package", "link": "#", "tags": ["VIP Program", "High Roller"], "description": "Treatment fit for a king.", "backgroundImage": "https://picsum.photos/id/25/600/400" },
+ 
 ]
