@@ -1,5 +1,20 @@
 [
-  { "id": 1win_global, "name": "NeonVegas", "logo": "https://picsum.photos/id/1/100/100", "rating": 4.8, "bonus": "500% up to $1000", "link": "#", "tags": ["Crypto", "Instant Payout"], "description": "The future of gaming is here.", "backgroundImage": "https://picsum.photos/id/14/600/400" },
-  { "id": bet365_mx, "name": "Royal Palace", "logo": "https://picsum.photos/id/2/100/100", "rating": 4.9, "bonus": "$500 Welcome Package", "link": "#", "tags": ["VIP Program", "High Roller"], "description": "Treatment fit for a king.", "backgroundImage": "https://picsum.photos/id/25/600/400" },
- 
+  {
+    "id": "1win_global",
+    "name": "Test Casino 1",
+    "logo": "https://placehold.co/100x100",
+    "link": "#",
+    "bonus": "$1000 Bonus",
+    "rating": 5.0,
+    "tags": ["Test Tag"]
+  },
+  {
+    "id": "bet365_mx",
+    "name": "Test Casino 2",
+    "logo": "https://placehold.co/100x100",
+    "link": "#",
+    "bonus": "500 Free Spins",
+    "rating": 4.5,
+    "tags": ["Crypto"]
+  }
 ]
