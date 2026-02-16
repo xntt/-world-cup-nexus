@@ -4,9 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loading...</title>
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
+
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Playfair+Display:wght@700&family=Orbitron:wght@500;900&display=swap" rel="stylesheet">
+
     <script>
         tailwind.config = {
             theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['Playfair Display', 'serif'], mono: ['Orbitron', 'monospace'], }, }, },
@@ -16,12 +23,12 @@
 </head>
 <body class="antialiased min-h-screen" x-data="siteManager()" x-init="initApp()" :class="currentTheme.container">
 
-    <!-- LOADING -->
+    <!-- LOADING STATE -->
     <div x-show="loading" class="fixed inset-0 flex items-center justify-center bg-gray-900 z-50">
         <div class="text-white text-xl animate-pulse font-mono">Loading Config...</div>
     </div>
 
-    <!-- MAIN -->
+    <!-- MAIN CONTENT -->
     <main x-show="!loading" x-cloak class="flex flex-col transition-opacity duration-500">
         
         <!-- NAV -->
@@ -30,96 +37,123 @@
             <div class="flex gap-4 text-xs font-bold opacity-60" :class="currentTheme.text"><span>18+</span><span>VERIFIED</span></div>
         </nav>
 
-        <!-- SECTIONS LOOP -->
+        <!-- DEBUGGER (如果不显示，请查看网页底部的黑色区域) -->
+        <div x-show="false" class="bg-red-900 text-white p-2 text-xs">
+            Sections: <span x-text="config.layout_order"></span>
+        </div>
+
+        <!-- DYNAMIC LAYOUT LOOP -->
         <template x-for="(sectionType, index) in config.layout_order" :key="index">
             
-            <!-- HERO -->
-            <template x-if="sectionType === 'hero' && config.hero">
-                <section class="relative w-full overflow-hidden min-h-[500px] flex items-center justify-center">
-                    <div class="absolute inset-0 z-0">
-                        <img :src="config.hero.background_image" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-black/60"></div>
-                    </div>
-                    <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
-                        <h1 class="text-4xl md:text-6xl font-bold mb-6 text-white" x-text="config.hero.title"></h1>
-                        <p class="text-lg md:text-2xl mb-8 text-white/90" x-text="config.hero.subtitle"></p>
-                        <a href="#offers" class="px-8 py-4 text-lg font-bold shadow-xl inline-block rounded" :class="currentTheme.button" x-text="config.hero.cta_text"></a>
-                    </div>
-                </section>
-            </template>
+            <!-- 【关键修复】必须加这个 div wrapper，否则只能显示第一个板块 -->
+            <div class="w-full section-wrapper">
 
-            <!-- MATCHES -->
-            <template x-if="sectionType === 'matches' && config.matches_data">
-                <section class="py-12 px-4 border-b border-white/5">
-                    <div class="max-w-4xl mx-auto space-y-3">
-                        <h2 class="text-2xl font-bold mb-6 text-center" :class="currentTheme.text">Matches</h2>
-                        <template x-for="match in config.matches_data">
-                            <div class="flex flex-col md:flex-row items-center justify-between p-4 rounded-lg border" :class="[currentTheme.secondary, currentTheme.border]">
-                                <div class="flex items-center gap-3"><span class="font-bold" :class="currentTheme.text" x-text="match.team_a"></span><span class="text-xs">VS</span><span class="font-bold" :class="currentTheme.text" x-text="match.team_b"></span></div>
-                                <div class="text-xs font-bold" :class="currentTheme.accent" x-text="match.stadium"></div>
-                                <button class="px-4 py-2 text-sm font-bold rounded" :class="currentTheme.button">Bet @ <span x-text="match.odds"></span></button>
-                            </div>
-                        </template>
-                    </div>
-                </section>
-            </template>
+                <!-- 1. HERO COMPONENT -->
+                <template x-if="sectionType === 'hero' && config.hero">
+                    <section class="relative w-full overflow-hidden min-h-[500px] flex items-center justify-center">
+                        <div class="absolute inset-0 z-0">
+                            <img :src="config.hero.background_image" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-black/60"></div>
+                        </div>
+                        <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+                            <h1 class="text-4xl md:text-6xl font-bold mb-6 text-white" x-text="config.hero.title"></h1>
+                            <p class="text-lg md:text-2xl mb-8 text-white/90" x-text="config.hero.subtitle"></p>
+                            <a href="#offers" class="px-8 py-4 text-lg font-bold shadow-xl inline-block rounded" :class="currentTheme.button" x-text="config.hero.cta_text"></a>
+                        </div>
+                    </section>
+                </template>
 
-            <!-- OFFERS -->
-            <template x-if="sectionType === 'offers' && activeOffers.length > 0">
-                <section id="offers" class="py-16 px-4">
-                    <div class="max-w-5xl mx-auto grid gap-6">
-                        <template x-for="(offer, idx) in activeOffers" :key="offer.id">
-                            <div class="flex flex-col md:flex-row items-center p-6 rounded-xl border relative" :class="[currentTheme.card, currentTheme.border]">
-                                <div class="absolute top-0 left-0 px-3 py-1 text-xs font-bold" :class="currentTheme.button">#<span x-text="idx + 1"></span></div>
-                                <img :src="offer.logo" class="w-16 h-16 rounded-lg object-cover bg-white mb-4 md:mb-0">
-                                <div class="ml-4 flex-1 text-center md:text-left">
-                                    <h3 class="font-bold text-lg" :class="currentTheme.text" x-text="offer.name"></h3>
-                                    <div class="text-xl font-black" :class="currentTheme.accent" x-text="offer.bonus"></div>
+                <!-- 2. MATCHES COMPONENT -->
+                <template x-if="sectionType === 'matches' && config.matches_data">
+                    <section class="py-12 px-4 border-b border-white/5">
+                        <div class="max-w-4xl mx-auto space-y-3">
+                            <h2 class="text-2xl font-bold mb-6 text-center" :class="currentTheme.text">Matches & Odds</h2>
+                            <template x-for="match in config.matches_data">
+                                <div class="flex flex-col md:flex-row items-center justify-between p-4 rounded-lg border" :class="[currentTheme.secondary, currentTheme.border]">
+                                    <div class="flex items-center w-full md:w-1/3 justify-center md:justify-start mb-2 md:mb-0 gap-3">
+                                        <span class="font-bold" :class="currentTheme.text" x-text="match.team_a"></span>
+                                        <span class="text-xs opacity-50">VS</span>
+                                        <span class="font-bold" :class="currentTheme.text" x-text="match.team_b"></span>
+                                    </div>
+                                    <div class="text-center w-full md:w-1/3 mb-2 md:mb-0">
+                                        <div class="text-xs opacity-60" :class="currentTheme.text" x-text="match.date"></div>
+                                        <div class="text-xs font-bold" :class="currentTheme.accent" x-text="match.stadium"></div>
+                                    </div>
+                                    <div class="w-full md:w-1/3 flex justify-center md:justify-end">
+                                        <button class="px-4 py-2 text-sm font-bold rounded" :class="currentTheme.button">Bet @ <span x-text="match.odds"></span></button>
+                                    </div>
                                 </div>
-                                <a :href="offer.link" class="px-8 py-3 rounded-lg font-bold" :class="currentTheme.button">CLAIM</a>
+                            </template>
+                        </div>
+                    </section>
+                </template>
+
+                <!-- 3. OFFERS COMPONENT -->
+                <template x-if="sectionType === 'offers' && activeOffers.length > 0">
+                    <section id="offers" class="py-16 px-4">
+                        <div class="max-w-5xl mx-auto grid gap-6">
+                            <h2 class="text-3xl font-bold mb-6 text-center" :class="currentTheme.text">Exclusive Offers</h2>
+                            <template x-for="(offer, idx) in activeOffers" :key="offer.id">
+                                <div class="flex flex-col md:flex-row items-center p-6 rounded-xl border relative" :class="[currentTheme.card, currentTheme.border]">
+                                    <div class="absolute top-0 left-0 px-3 py-1 text-xs font-bold" :class="currentTheme.button">#<span x-text="idx + 1"></span></div>
+                                    <img :src="offer.logo" class="w-16 h-16 rounded-lg object-cover bg-white mb-4 md:mb-0 shadow-md">
+                                    <div class="ml-4 flex-1 text-center md:text-left">
+                                        <h3 class="font-bold text-lg" :class="currentTheme.text" x-text="offer.name"></h3>
+                                        <div class="text-xl font-black" :class="currentTheme.accent" x-text="offer.bonus"></div>
+                                        <div class="flex gap-2 justify-center md:justify-start mt-2">
+                                            <template x-for="tag in offer.tags">
+                                                <span class="text-[10px] uppercase px-2 py-1 rounded border opacity-60" :class="[currentTheme.border, currentTheme.text]" x-text="tag"></span>
+                                            </template>
+                                        </div>
+                                    </div>
+                                    <a :href="offer.link" class="px-8 py-3 rounded-lg font-bold mt-4 md:mt-0" :class="currentTheme.button">CLAIM</a>
+                                </div>
+                            </template>
+                        </div>
+                    </section>
+                </template>
+
+                <!-- 4. NEWS COMPONENT -->
+                <template x-if="sectionType === 'news' && config.news_data">
+                    <section class="py-16 px-4 bg-black/5">
+                        <div class="max-w-7xl mx-auto">
+                            <h2 class="text-3xl font-bold mb-8 text-center" :class="currentTheme.text">Latest News</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <template x-for="item in config.news_data">
+                                    <article class="p-6 rounded-xl border" :class="[currentTheme.card, currentTheme.border]">
+                                        <span class="text-xs font-bold opacity-60 mb-2 block" :class="currentTheme.text" x-text="item.date"></span>
+                                        <h3 class="text-lg font-bold mb-3" :class="currentTheme.text" x-text="item.title"></h3>
+                                        <p class="text-sm opacity-70" :class="currentTheme.text" x-text="item.excerpt"></p>
+                                    </article>
+                                </template>
                             </div>
-                        </template>
-                    </div>
-                </section>
-            </template>
+                        </div>
+                    </section>
+                </template>
 
-            <!-- NEWS -->
-            <template x-if="sectionType === 'news' && config.news_data">
-                <section class="py-16 px-4 bg-black/5">
-                    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <template x-for="item in config.news_data">
-                            <article class="p-6 rounded-xl border" :class="[currentTheme.card, currentTheme.border]">
-                                <span class="text-xs font-bold opacity-60 mb-2 block" :class="currentTheme.text" x-text="item.date"></span>
-                                <h3 class="text-lg font-bold mb-3" :class="currentTheme.text" x-text="item.title"></h3>
-                                <p class="text-sm opacity-70" :class="currentTheme.text" x-text="item.excerpt"></p>
-                            </article>
-                        </template>
-                    </div>
-                </section>
-            </template>
+                <!-- 5. PARTNERS COMPONENT -->
+                <template x-if="sectionType === 'partners' && config.partners_data">
+                    <section class="py-10 border-t border-b border-white/5 opacity-70 text-center">
+                        <div class="flex flex-wrap justify-center gap-8">
+                            <template x-for="logo in config.partners_data">
+                                <img :src="logo" class="h-8 object-contain bg-white/10 p-2 rounded grayscale hover:grayscale-0 transition-all">
+                            </template>
+                        </div>
+                    </section>
+                </template>
 
-            <!-- PARTNERS -->
-            <template x-if="sectionType === 'partners' && config.partners_data">
-                <section class="py-10 border-t border-b border-white/5 opacity-70 text-center">
-                    <div class="flex flex-wrap justify-center gap-8">
-                        <template x-for="logo in config.partners_data">
-                            <img :src="logo" class="h-8 object-contain bg-white/10 p-2 rounded grayscale hover:grayscale-0 transition-all">
-                        </template>
-                    </div>
-                </section>
-            </template>
+                <!-- 6. SEO COMPONENT -->
+                <template x-if="sectionType === 'seo' && config.seo_content">
+                    <article class="py-16 px-4">
+                        <div class="max-w-3xl mx-auto p-8 border rounded-2xl" :class="[currentTheme.secondary, currentTheme.border]">
+                            <h2 class="text-2xl font-bold mb-4" :class="currentTheme.text" x-text="config.seo_content.title"></h2>
+                            <p class="opacity-90 leading-relaxed" :class="currentTheme.text" x-text="config.seo_content.body"></p>
+                        </div>
+                    </article>
+                </template>
 
-            <!-- SEO -->
-            <template x-if="sectionType === 'seo' && config.seo_content">
-                <article class="py-16 px-4">
-                    <div class="max-w-3xl mx-auto p-8 border rounded-2xl" :class="[currentTheme.secondary, currentTheme.border]">
-                        <h2 class="text-2xl font-bold mb-4" :class="currentTheme.text" x-text="config.seo_content.title"></h2>
-                        <p class="opacity-90" :class="currentTheme.text" x-text="config.seo_content.body"></p>
-                    </div>
-                </article>
-            </template>
-
-        </template>
+            </div> <!-- END WRAPPER -->
+        </template> <!-- END LOOP -->
 
         <footer class="py-12 text-center border-t mt-auto opacity-50" :class="[currentTheme.border, currentTheme.text]">&copy; 2026 Guide. 18+ Only.</footer>
     </main>
@@ -135,7 +169,6 @@
             return {
                 loading: true,
                 currentHostname: window.location.hostname,
-                // 注意：这里要改成你 JSON 里实际填写的域名
                 debugHostname: 'mx.worldcup-guide.com', 
                 allSites: [], masterOffers: [], config: {}, activeOffers: [], currentTheme: THEME_STYLES['modern'],
 
@@ -150,7 +183,13 @@
                     finally { this.loading = false; }
                 },
                 detectSite() {
-                    const hostname = (this.currentHostname.includes('localhost') || this.currentHostname.includes('127.0.0.1')) ? this.debugHostname : this.currentHostname;
+                    // 本地测试或者 Cloudflare 预览域名，都强制使用 debugHostname
+                    const isDebug = this.currentHostname.includes('localhost') || 
+                                    this.currentHostname.includes('127.0.0.1') || 
+                                    this.currentHostname.includes('pages.dev');
+                                    
+                    const hostname = isDebug ? this.debugHostname : this.currentHostname;
+                    
                     const foundConfig = this.allSites.find(s => s.hostname === hostname);
                     if (foundConfig) {
                         this.config = foundConfig;
@@ -158,7 +197,6 @@
                         this.activeOffers = (foundConfig.offer_ids || []).map(id => this.masterOffers.find(o => o.id === id)).filter(Boolean);
                         document.title = foundConfig.hero ? foundConfig.hero.title : 'Guide';
                     } else {
-                        // 默认加载第一个
                         this.config = this.allSites[0];
                         this.currentTheme = THEME_STYLES[this.config.theme];
                         this.activeOffers = (this.config.offer_ids || []).map(id => this.masterOffers.find(o => o.id === id)).filter(Boolean);
