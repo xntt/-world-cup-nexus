@@ -1,134 +1,143 @@
 import json
 import os
-import requests
+import random
+import time
+import google.generativeai as genai
+from datetime import datetime, timedelta
 
-# --- 配置区 ---
-CONFIG_TEMPLATES = {
-    "casino": {
-        "theme": "cyberpunk",
-        "layout_order": ["hero", "offers", "seo"],
-        "list_style": "grid",
-        "geo_target": "Global"
-    },
-    "finance": {
-        "theme": "modern",
-        "layout_order": ["offers", "hero", "seo"],
-        "list_style": "table",
-        "geo_target": "US/CA"
-    }
-}
+# --- 1. 初始化设置 ---
+# 配置 Gemini
+GEMINI_KEY = os.environ.get("GEMINI_API_KEY")
+if GEMINI_KEY:
+    genai.configure(api_key=GEMINI_KEY)
+else:
+    print("Warning: GEMINI_API_KEY not found!")
 
-# --- 核心功能 1: 更新 sites.json (修正版 - 支持列表格式) ---
-def update_sites_config():
-    file_path = 'sites.json'
+SITES_FILE = 'sites.json'
+
+# --- 2. AI 生成函数 (Gemini版) ---
+
+def call_gemini(prompt):
+    """通用 Gemini 调用函数，带重试机制"""
+    try:
+        # 使用 Gemini 1.5 Flash，速度快且免费额度高
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        response = model.generate_content(prompt)
+        return response.text
+    except Exception as e:
+        print(f"Gemini API Error: {e}")
+        # 如果触发频率限制，休息一下再试（简单的重试逻辑）
+        time.sleep(2)
+        return None
+
+def generate_ai_news(geo, theme):
+    """生成 3 条新闻，返回标准 JSON 格式"""
     
-    # 1. 读取现有的配置
-    if os.path.exists(file_path):
+    # 构建 Prompt
+    prompt = f"""
+    You are a sports betting journalist for a {theme} style site in {geo}.
+    Write 3 short news items about World Cup 2026.
+    
+    IMPORTANT: You must output ONLY a valid JSON array. Do not wrap in markdown code blocks.
+    Format:
+    [
+      {{"title": "Headline 1", "date": "Date", "excerpt": "Short summary"}},
+      {{"title": "Headline 2", "date": "Date", "excerpt": "Short summary"}}
+    ]
+    """
+    
+    raw_text = call_gemini(prompt)
+    
+    # 清洗数据（Gemini 有时会加 ```json ... ```，需要去掉）
+    if raw_text:
+        clean_text = raw_text.replace('```json', '').replace('```', '').strip()
         try:
-            with open(file_path, 'r') as f:
-                data = json.load(f)
-                # 确保 data 是一个列表，如果不是（或者是空），初始化为空列表
-                if not isinstance(data, list):
-                    print("Warning: sites.json was not a list. Resetting to [].")
-                    data = []
+            return json.loads(clean_text)
         except json.JSONDecodeError:
-            data = []
-    else:
-        data = []
-
-    # 2. 定义你要添加的新域名 (在此处修改你要添加的子域名)
-    # 提示：每次运行前，在这里填入你想生成的新域名
-    new_domains_to_add = [
-        "mx.worldcup-guide.com", 
-        "loan-usa.worldcup-guide.com"
-    ] 
+            print("JSON Parse Failed, using fallback.")
     
-    added_domains = []
+    # 兜底数据 (如果 AI 挂了，用这个)
+    return [
+        {"title": f"World Cup 2026: {geo} Updates", "date": "Breaking News", "excerpt": "Latest odds and team news updating live."},
+        {"title": "Betting Market Shifts", "date": "Today", "excerpt": "Big changes in the outright winner markets."},
+        {"title": "Exclusive Bonus", "date": "Limited Time", "excerpt": "Check our top rated offers above."}
+    ]
 
-    for domain in new_domains_to_add:
-        # 检查域名是否已存在于列表中
-        # 我们通过查找 hostname 字段来判断
-        exists = False
-        for site in data:
-            if site.get('hostname') == domain:
-                exists = True
-                break
-        
-        if not exists:
-            # 决定这个站是什么类型
-            site_type = "finance" if "loan" in domain or "bank" in domain else "casino"
-            template = CONFIG_TEMPLATES[site_type]
-            
-            # 生成新的站点配置对象
-            new_site_config = {
-                "id": f"site_{random_id()}",
-                "hostname": domain,
-                "name": f"Best {site_type.title()} Deals 2026",
-                "theme": template["theme"],
-                "layout_order": template["layout_order"],
-                "list_style": template["list_style"],
-                "hero": {
-                    "title": f"Top {site_type.title()} Offers",
-                    "subtitle": "Exclusive 2026 World Cup Deals",
-                    "cta_text": "Check Offers",
-                    "background_image": "https://images.unsplash.com/photo-1518546305927-5a555bb7020d?auto=format&fit=crop&w=1920&q=80"
-                },
-                # 根据类型分配不同的 Offer ID (需要与 content_pool.json 里的 ID 对应)
-                "offer_ids": ["1win_global", "stake_us"] if site_type == "casino" else ["bet365_mx"]
-            }
-            
-            # 添加到列表
-            data.append(new_site_config)
-            added_domains.append(domain)
-            print(f"Added config for: {domain}")
-        else:
-            print(f"Skipping {domain}, already exists.")
+def generate_seo_text(domain, geo, theme):
+    """生成 SEO 底部文案"""
+    prompt = f"""
+    Write a 50-word footer SEO description for '{domain}'. 
+    Target Audience: {geo}. 
+    Theme: {theme} (Betting/Finance). 
+    Keywords: Safe, Licensed, Fast Payouts.
+    Output: Just the text.
+    """
+    text = call_gemini(prompt)
+    return text.strip() if text else f"Premier betting guide for {geo}. Licensed and secure."
 
-    # 3. 保存回文件
-    if added_domains:
-        with open(file_path, 'w') as f:
-            json.dump(data, f, indent=2)
+# --- 3. 辅助生成逻辑 (无需 AI) ---
+
+def generate_matches():
+    """模拟生成赛事数据"""
+    teams = ["Mexico", "USA", "Brazil", "France", "England", "Spain", "Japan", "Canada"]
+    matches = []
+    today = datetime.now()
     
-    return added_domains
+    for i in range(2):
+        t1, t2 = random.sample(teams, 2)
+        match_date = (today + timedelta(days=i+1)).strftime("%b %d - %H:00")
+        matches.append({
+            "team_a": t1,
+            "team_b": t2,
+            "date": match_date,
+            "stadium": random.choice(["Estadio Azteca", "MetLife Stadium", "SoFi Stadium"]),
+            "odds": f"{random.uniform(1.8, 3.5):.2f}"
+        })
+    return matches
 
-# 辅助函数：生成随机ID
-def random_id():
-    import random
-    import string
-    return ''.join(random.choices(string.ascii_lowercase + string.digits, k=6))
+# --- 4. 主程序 ---
 
-# --- 核心功能 2: 自动绑定域名到 Cloudflare ---
-def bind_to_cloudflare(domains):
-    token = os.environ.get("CF_API_TOKEN")
-    account_id = os.environ.get("CF_ACCOUNT_ID")
-    project_name = os.environ.get("CF_PROJECT_NAME")
+def main():
+    print("🚀 Agent Starting (Powered by Gemini)...")
     
-    if not token:
-        print("No CF_API_TOKEN found, skipping Cloudflare binding.")
+    # 读取 sites.json
+    if not os.path.exists(SITES_FILE):
+        print("sites.json not found!")
         return
 
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "Content-Type": "application/json"
-    }
-    
-    for domain in domains:
-        url = f"https://api.cloudflare.com/client/v4/accounts/{account_id}/pages/projects/{project_name}/domains"
-        payload = {"name": domain}
-        
-        try:
-            response = requests.post(url, headers=headers, json=payload)
-            if response.status_code == 200:
-                print(f"SUCCESS: Bound {domain} to Cloudflare Pages")
-            else:
-                print(f"FAILED to bind {domain}: {response.text}")
-        except Exception as e:
-            print(f"Error connecting to Cloudflare: {e}")
+    with open(SITES_FILE, 'r') as f:
+        sites = json.load(f)
 
-# --- 主程序 ---
+    count = 0
+    for site in sites:
+        domain = site.get('hostname', 'unknown')
+        theme = site.get('theme', 'modern')
+        # 如果 json 里没有 geo 字段，默认 Global
+        geo = site.get('geo', 'Global') 
+        
+        print(f"[{count+1}] Updating: {domain}...")
+        
+        # 1. 更新新闻 (AI)
+        site['news_data'] = generate_ai_news(geo, theme)
+        
+        # 2. 更新 SEO 文案 (AI) - 偶尔更新以省额度，这里每次都更
+        if 'seo_content' not in site:
+            site['seo_content'] = {}
+        site['seo_content']['body'] = generate_seo_text(domain, geo, theme)
+        
+        # 3. 更新赛事 (模拟)
+        site['matches_data'] = generate_matches()
+        
+        # 4. 关键：延时！防止 Gemini 报错 (429 Too Many Requests)
+        # 免费版限制 RPM=15，所以每次请求后休息 4 秒比较稳妥
+        time.sleep(4) 
+        count += 1
+
+    # 保存
+    with open(SITES_FILE, 'w') as f:
+        json.dump(sites, f, indent=2)
+    
+    print("✅ All Sites Updated Successfully!")
+
 if __name__ == "__main__":
-    newly_added = update_sites_config()
-    if newly_added:
-        bind_to_cloudflare(newly_added)
-    else:
-        print("No new domains added.")
+    main()
