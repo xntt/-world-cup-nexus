@@ -2,21 +2,21 @@
   {
     "id": "1win_mx",
     "name": "1win México",
-    "logo": "https://i.imgur.com/example_1win.png", 
-    "link": "https://1win.com/register?promo=CUP2026",
-    "bonus": "500% de Bono + 70 Giros Gratis",
-    "rating": 4.9,
-    "tags": ["Pagos Rápidos", "Cripto", "App Móvil"],
-    "geo": ["MX", "AR", "CO"]
+    "logo": "https://i.imgur.com/your_1win_logo.png", 
+    "link": "https://1win.com/register?promo=YOUR_CODE",
+    "bonus": "500% Bonus",
+    "rating": 5.0,
+    "tags": ["Crypto", "Fast Pay"],
+    "geo": ["MX"]
   },
   {
-    "id": "stake_global",
-    "name": "Stake.com",
-    "logo": "https://i.imgur.com/example_stake.png",
-    "link": "https://stake.com/?c=promo",
-    "bonus": "Rakeback Diario del 5%",
+    "id": "stake_us",
+    "name": "Stake.us",
+    "logo": "https://i.imgur.com/your_stake_logo.png",
+    "link": "https://stake.us/?c=YOUR_CODE",
+    "bonus": "250K Gold Coins",
     "rating": 4.8,
-    "tags": ["VIP Club", "Sin Límites"],
-    "geo": ["Global"]
+    "tags": ["Social Casino"],
+    "geo": ["US"]
   }
 ]
