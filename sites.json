@@ -22,30 +22,35 @@
     ],
     "matches_data": [
       {
-        "team_a": "Mexico",
-        "team_b": "Brazil",
-        "date": "June 12 - 19:00",
-        "stadium": "Estadio Azteca",
-        "odds": "3.50"
+        "team_a": "Spain",
+        "team_b": "Japan",
+        "date": "Feb 18 - 03:00",
+        "stadium": "SoFi Stadium",
+        "odds": "3.49"
       },
       {
-        "team_a": "USA",
-        "team_b": "England",
-        "date": "June 13 - 21:00",
-        "stadium": "MetLife Stadium",
-        "odds": "2.10"
+        "team_a": "Japan",
+        "team_b": "USA",
+        "date": "Feb 19 - 03:00",
+        "stadium": "SoFi Stadium",
+        "odds": "3.18"
       }
     ],
     "news_data": [
       {
-        "title": "Opening Ceremony Details",
-        "date": "May 20, 2026",
-        "excerpt": "The World Cup opening ceremony will feature global stars..."
+        "title": "World Cup 2026: Global Updates",
+        "date": "Breaking News",
+        "excerpt": "Latest odds and team news updating live."
       },
       {
-        "title": "Mexico Team Update",
-        "date": "May 21, 2026",
-        "excerpt": "Key players are returning from injury just in time..."
+        "title": "Betting Market Shifts",
+        "date": "Today",
+        "excerpt": "Big changes in the outright winner markets."
+      },
+      {
+        "title": "Exclusive Bonus",
+        "date": "Limited Time",
+        "excerpt": "Check our top rated offers above."
       }
     ],
     "partners_data": [
@@ -54,7 +59,7 @@
     ],
     "seo_content": {
       "title": "SEO Footer Title",
-      "body": "This is the SEO footer text that helps ranking."
+      "body": "Premier betting guide for Global. Licensed and secure."
     }
   },
   {
@@ -76,6 +81,42 @@
     },
     "offer_ids": [
       "bet365_mx"
+    ],
+    "news_data": [
+      {
+        "title": "World Cup 2026: Global Updates",
+        "date": "Breaking News",
+        "excerpt": "Latest odds and team news updating live."
+      },
+      {
+        "title": "Betting Market Shifts",
+        "date": "Today",
+        "excerpt": "Big changes in the outright winner markets."
+      },
+      {
+        "title": "Exclusive Bonus",
+        "date": "Limited Time",
+        "excerpt": "Check our top rated offers above."
+      }
+    ],
+    "seo_content": {
+      "body": "Premier betting guide for Global. Licensed and secure."
+    },
+    "matches_data": [
+      {
+        "team_a": "France",
+        "team_b": "England",
+        "date": "Feb 18 - 03:00",
+        "stadium": "MetLife Stadium",
+        "odds": "2.82"
+      },
+      {
+        "team_a": "USA",
+        "team_b": "Brazil",
+        "date": "Feb 19 - 03:00",
+        "stadium": "Estadio Azteca",
+        "odds": "2.67"
+      }
     ]
   }
 ]
