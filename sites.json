@@ -22,18 +22,18 @@
     ],
     "matches_data": [
       {
-        "team_a": "France",
-        "team_b": "Mexico",
-        "date": "Feb 18",
-        "stadium": "MetLife Stadium",
-        "odds": "2.87"
-      },
-      {
         "team_a": "Brazil",
         "team_b": "USA",
+        "date": "Feb 18",
+        "stadium": "MetLife Stadium",
+        "odds": "2.40"
+      },
+      {
+        "team_a": "England",
+        "team_b": "Brazil",
         "date": "Feb 19",
         "stadium": "MetLife Stadium",
-        "odds": "2.62"
+        "odds": "1.97"
       }
     ],
     "news_data": [],
@@ -74,18 +74,18 @@
     },
     "matches_data": [
       {
-        "team_a": "Brazil",
-        "team_b": "France",
+        "team_a": "Mexico",
+        "team_b": "Brazil",
         "date": "Feb 18",
         "stadium": "MetLife Stadium",
-        "odds": "2.59"
+        "odds": "2.37"
       },
       {
         "team_a": "England",
-        "team_b": "Brazil",
+        "team_b": "Mexico",
         "date": "Feb 19",
         "stadium": "MetLife Stadium",
-        "odds": "3.43"
+        "odds": "1.74"
       }
     ]
   }
