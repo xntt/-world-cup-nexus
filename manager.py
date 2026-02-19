@@ -5,7 +5,7 @@ import time
 import google.generativeai as genai
 from datetime import datetime, timedelta
 
-# --- 配置 ---
+# --- config ---
 GEMINI_KEY = os.environ.get("GEMINI_API_KEY")
 if GEMINI_KEY:
     genai.configure(api_key=GEMINI_KEY)
@@ -36,7 +36,7 @@ def generate_ai_content(domain, theme, geo, focus_sport):
         ]
         """
         
-        # 1. 生成新闻
+        # 1. 
         news_prompt = f"""
         Act as a sports editor for a {geo} betting site ({domain}).
         Write 3 short, exciting news headlines about World Cup 2026.
@@ -46,7 +46,7 @@ def generate_ai_content(domain, theme, geo, focus_sport):
         news_text = news_resp.text.replace('```json', '').replace('```', '').strip()
         news_data = json.loads(news_text)
 
-        # 2. 生成 SEO 文案
+        # 2. 
         seo_prompt = f"Write a 50-word SEO footer for {domain} targeting {geo} players. Keywords: Bonus, Safe, App."
         seo_resp = model.generate_content(seo_prompt)
         seo_body = seo_resp.text.strip()
@@ -58,7 +58,6 @@ def generate_ai_content(domain, theme, geo, focus_sport):
         return [], "Best betting guide 2026."
 
 def generate_matches():
-    """生成模拟赛事"""
     teams = ["Mexico", "USA", "Brazil", "France", "England"]
     matches = []
     today = datetime.now()
@@ -72,29 +71,32 @@ def generate_matches():
         })
     return matches
 
-# --- 主程序 ---
+# --- main ---
 def main():
-    # 1. 读取 Offer 库
+    # 1. 
     with open(OFFERS_FILE, 'r') as f:
         all_offers = json.load(f)
     
-    # 2. 读取站点配置
+    # 2.
     with open(SITES_FILE, 'r') as f:
         sites = json.load(f)
 
-    # 3. 遍历并强制更新每个站
+    # 3. 
     print(f"🔄 Updating {len(sites)} sites...")
     
     for site in sites:
-        domain = site.get('hostname')
-        geo = "Global" # 这里你可以根据域名判断，比如 if 'mx' in domain: geo='MX'
-        theme = site.get('theme', 'modern')
+    domain = site.get('hostname')
+    geo = site.get('geo', 'Global')
+    theme = site.get('theme', 'modern')
 
-        print(f"Writing content for: {domain}")
+         focus_sport = site.get('focus_sport', 'General Sports')
+
+    print(f"Updating {domain} covering {focus_sport}...")
+
+    # 传入 focus_sport
+    news, seo = generate_ai_content(domain, theme, geo, focus_sport)
 
         # A. 自动分配 Offer (硬数据)
-        # 逻辑：把所有 Offer ID 塞进去，或者根据 Geo 筛选
-        # 这里简单粗暴：把 offers.json 里前 3 个 ID 给它
         site['offer_ids'] = [o['id'] for o in all_offers[:3]]
 
         # B. AI 生成新闻和 SEO (软数据)
