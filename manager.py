@@ -1,182 +1,127 @@
 import json
 import os
-import random
 import time
-import feedparser  # 新增库
+import feedparser
 import google.generativeai as genai
-from datetime import datetime, timedelta
+from datetime import datetime
 
-# --- 1. 配置 ---
+# --- 配置区 ---
 GEMINI_KEY = os.environ.get("GEMINI_API_KEY")
 if GEMINI_KEY:
     genai.configure(api_key=GEMINI_KEY)
 
 SITES_FILE = 'sites.json'
 
-# --- 2. 真实新闻源 (RSS Feeds) ---
-# 这里收集了一些免费且高质量的足球/体育新闻源
-RSS_SOURCES = [
-    "https://www.espn.com/espn/rss/soccer/news",  # ESPN 足球
-    "https://feeds.bbci.co.uk/sport/football/rss.xml", # BBC 足球
-    "https://www.goal.com/feeds/en/news" # Goal.com
-]
+# 定义针对不同地区的 RSS 源 (这里只是示例，你可以找更多)
+RSS_SOURCES = {
+    "Global": "https://www.espn.com/espn/rss/soccer/news",
+    "MX": "https://www.espn.com.mx/espn/rss/soccer/news", # 墨西哥源
+    "US": "https://www.espn.com/espn/rss/soccer/news",
+    "BR": "https://www.espn.com.br/espn/rss/soccer/news"
+}
 
-# --- 3. 核心功能函数 ---
-
-def fetch_real_news_and_rewrite(domain, theme):
-    """
-    1. 从 RSS 获取真新闻
-    2. 用 Gemini 改写成博彩风格
-    """
+# --- 核心功能 1: 抓取真实新闻 ---
+def fetch_real_news(geo_code):
+    """抓取 RSS 并返回前 3 条真实新闻数据"""
+    rss_url = RSS_SOURCES.get(geo_code, RSS_SOURCES["Global"])
+    print(f"📡 Fetching RSS for {geo_code}: {rss_url}")
+    
+    feed = feedparser.parse(rss_url)
     news_items = []
     
-    # A. 随机选一个源抓取
-    source = random.choice(RSS_SOURCES)
-    print(f"📡 Fetching RSS from: {source}")
-    
-    try:
-        feed = feedparser.parse(source)
-        # 只取前 3 条最新新闻
-        entries = feed.entries[:3]
-        
-        if not entries:
-            print("⚠️ RSS Empty, using fallback.")
-            return get_fallback_news()
-
-        # B. 遍历新闻并改写
-        for entry in entries:
-            original_title = entry.title
-            original_link = entry.link
-            
-            # 如果没有 AI Key，直接用原标题 (降级模式)
-            if not GEMINI_KEY:
-                news_items.append({
-                    "title": original_title,
-                    "date": datetime.now().strftime("%b %d"),
-                    "excerpt": "Click to read full story on official sports news network."
-                })
-                continue
-
-            # C. 调用 AI 改写 (赋予博彩属性)
-            prompt = f"""
-            Rewrite this sports news title into a catchy headline for a {theme} betting site: "{original_title}".
-            Then write a 1-sentence summary enticing users to bet on the outcome.
-            Output JSON: {{"title": "...", "excerpt": "..."}}
-            """
-            
-            try:
-                model = genai.GenerativeModel('gemini-1.5-flash')
-                response = model.generate_content(prompt)
-                # 清洗 AI 返回的 JSON
-                text = response.text.replace('```json', '').replace('```', '').strip()
-                ai_data = json.loads(text)
-                
-                news_items.append({
-                    "title": ai_data.get("title", original_title),
-                    "date": datetime.now().strftime("%b %d"),
-                    "excerpt": ai_data.get("excerpt", "Check latest odds now.")
-                })
-            except Exception as e:
-                print(f"AI Rewrite Error: {e}")
-                # 改写失败就用原标题
-                news_items.append({
-                    "title": original_title,
-                    "date": datetime.now().strftime("%b %d"),
-                    "excerpt": "Latest update from the world of football."
-                })
-                
-            # 限制速度，防止 API 报错
-            time.sleep(1.5)
-            
-        return news_items
-
-    except Exception as e:
-        print(f"RSS Error: {e}")
-        return get_fallback_news()
-
-def get_fallback_news():
-    """兜底假新闻"""
-    return [
-        {"title": "World Cup 2026 Updates", "date": "Live", "excerpt": "Tracking qualifiers and team rosters live."},
-        {"title": "Betting Market Watch", "date": "Today", "excerpt": "Odds are shifting fast as teams prepare."},
-        {"title": "Exclusive Promo", "date": "Limited", "excerpt": "Don't miss out on the 500% deposit bonus."}
-    ]
-
-def generate_matches():
-    """自动化生成未来赛事 (模拟真实赛程)"""
-    # 技巧：这里可以写一个逻辑，永远生成“明天”和“后天”的比赛
-    matches = []
-    teams = ["Mexico", "USA", "Canada", "Brazil", "Argentina", "France", "Spain", "Germany"]
-    stadiums = ["Azteca", "MetLife Stadium", "SoFi Stadium", "BC Place"]
-    
-    today = datetime.now()
-    for i in range(3): # 生成3场
-        t1, t2 = random.sample(teams, 2)
-        match_date = (today + timedelta(days=i+1)).strftime("%b %d - 20:00")
-        
-        # 随机生成一个看起来像真的赔率
-        odds = round(random.uniform(1.8, 3.2), 2)
-        
-        matches.append({
-            "team_a": t1,
-            "team_b": t2,
-            "date": match_date,
-            "stadium": random.choice(stadiums),
-            "odds": str(odds)
+    # 只取前 3 条
+    for entry in feed.entries[:3]:
+        news_items.append({
+            "title": entry.title,
+            "link": entry.link,
+            "summary": entry.summary if 'summary' in entry else entry.title
         })
-    return matches
+    return news_items
 
-def generate_seo_footer(domain, theme):
-    """自动化 SEO 文案"""
-    if not GEMINI_KEY:
-        return f"The best {theme} guide for {domain}. Safe and Verified."
+# --- 核心功能 2: Gemini 深度本地化改写 ---
+def ai_rewrite_content(domain, geo, theme, raw_news):
+    """
+    让 AI 做两件事：
+    1. 改写新闻：把普通体育新闻变成 '博彩诱导' 新闻。
+    2. 生成长文 SEO：写一篇针对该域名的 500字 HTML 攻略。
+    """
+    model = genai.GenerativeModel('gemini-1.5-flash')
+    
+    # A. 准备新闻素材
+    news_context = "\n".join([f"- {n['title']}: {n['summary']}" for n in raw_news])
+    
+    # B. 构建超级 Prompt
+    prompt = f"""
+    You are a professional SEO content writer for a betting site: {domain}.
+    Target Audience: {geo} (Country Code). Theme: {theme}.
+    
+    TASK 1: Rewrite these 3 real news summaries into engaging betting news.
+    - Translate to the local language of {geo} (e.g., Spanish for MX, Portuguese for BR).
+    - Add a "Betting Angle" (e.g., mention odds, predictions).
+    - Source News:
+    {news_context}
+    
+    TASK 2: Write a Long-form SEO Guide (HTML format) for the bottom of the homepage.
+    - Title: "Why Bet on World Cup 2026 in {geo}?"
+    - Length: ~300 words.
+    - Content: Local payment methods, legal status in {geo}, and popular local teams.
+    - Format: Use <h3>, <p>, <ul> tags.
+    
+    OUTPUT FORMAT (Strict JSON):
+    {{
+      "news_data": [
+        {{"title": "...", "date": "Today", "excerpt": "...", "link": "original_link"}}
+      ],
+      "seo_html": "<h3>...</h3><p>...</p>..."
+    }}
+    """
     
     try:
-        model = genai.GenerativeModel('gemini-1.5-flash')
-        prompt = f"Write a 2-sentence SEO footer for a gambling site '{domain}'. Mention 'safe payouts' and '2026 World Cup'."
-        resp = model.generate_content(prompt)
-        return resp.text.strip()
-    except:
-        return f"Official betting partner guide for {domain}."
+        response = model.generate_content(prompt)
+        clean_json = response.text.replace('```json', '').replace('```', '').strip()
+        return json.loads(clean_json)
+    except Exception as e:
+        print(f"❌ AI Error: {e}")
+        return None
 
-# --- 4. 主程序 ---
-
+# --- 主程序 ---
 def main():
-    print("🚀 Real-Time Agent Starting...")
-    
-    if not os.path.exists(SITES_FILE):
-        print("sites.json not found.")
-        return
-
     with open(SITES_FILE, 'r') as f:
         sites = json.load(f)
 
-    # 遍历更新
     for site in sites:
-        domain = site.get('hostname', 'unknown')
-        theme = site.get('theme', 'modern')
-        print(f"Processing: {domain}...")
+        domain = site.get('hostname')
+        
+        # 1. 简单的 GEO 判定 (实际可以写在 CSV 里)
+        if 'mx' in domain or 'mexico' in domain: geo = 'MX'
+        elif 'br' in domain: geo = 'BR'
+        else: geo = 'US'
+        
+        print(f"👉 Processing {domain} [GEO: {geo}]...")
 
-        # 1. 获取真新闻 + AI 改写
-        site['news_data'] = fetch_real_news_and_rewrite(domain, theme)
+        # 2. 抓取真实数据
+        raw_news = fetch_real_news(geo)
         
-        # 2. 自动更新赛事时间表 (永远显示未来日期)
-        site['matches_data'] = generate_matches()
-        
-        # 3. 自动更新 SEO 文案
-        if 'seo_content' not in site: site['seo_content'] = {}
-        site['seo_content']['body'] = generate_seo_footer(domain, theme)
-        site['seo_content']['title'] = f"{domain} Guide"
-        
-        # 4. 确保布局完整
-        if 'layout_order' not in site:
-             site['layout_order'] = ["hero", "matches", "offers", "news", "partners", "seo"]
+        # 3. AI 加工
+        if raw_news:
+            ai_result = ai_rewrite_content(domain, geo, site.get('theme'), raw_news)
+            
+            if ai_result:
+                # 填入新闻
+                site['news_data'] = ai_result.get('news_data', [])
+                
+                # 填入 SEO 长文
+                if 'seo_content' not in site: site['seo_content'] = {}
+                site['seo_content']['body'] = ai_result.get('seo_html', "Default SEO Text")
+                site['seo_content']['title'] = f"Official Betting Guide: {domain}"
+
+        # 4. 休息 (避免 API 限制)
+        time.sleep(3)
 
     # 保存
     with open(SITES_FILE, 'w') as f:
         json.dump(sites, f, indent=2)
-    
-    print("✅ All sites updated with REAL content!")
+    print("✅ Real News & Long SEO Content Updated!")
 
 if __name__ == "__main__":
     main()
