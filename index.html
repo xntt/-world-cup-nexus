@@ -142,26 +142,49 @@
                     </section>
                 </template>
 
-                <!-- 5. PARTNERS COMPONENT -->
-                <template x-if="sectionType === 'partners' && config.partners_data">
-                    <section class="py-10 border-t border-b border-white/5 opacity-70 text-center">
-                        <div class="flex flex-wrap justify-center gap-8">
-                            <template x-for="logo in config.partners_data">
-                                <img :src="logo" class="h-8 object-contain bg-white/10 p-2 rounded grayscale hover:grayscale-0 transition-all">
-                            </template>
-                        </div>
-                    </section>
+               <!-- 5. FAQ COMPONENT  -->
+<template x-if="sectionType === 'faq' && config.faq">
+    <section class="py-16 px-4 bg-white/5">
+        <div class="max-w-3xl mx-auto">
+            <h2 class="text-3xl font-bold mb-10 text-center" :class="currentTheme.text">
+                Frequently Asked Questions
+            </h2>
+            <div class="space-y-4">
+                <template x-for="item in config.faq">
+                    <div class="p-6 rounded-lg border transition-all" 
+                         :class="[currentTheme.secondary, currentTheme.border]">
+                        <h3 class="font-bold text-lg mb-2 flex items-center" :class="currentTheme.text">
+                            <span class="text-xl mr-2 opacity-50">?</span>
+                            <span x-text="item.q"></span>
+                        </h3>
+                        <p class="opacity-80 leading-relaxed pl-6 border-l-2" 
+                           :class="[currentTheme.text, currentTheme.border]" 
+                           x-text="item.a"></p>
+                    </div>
                 </template>
+            </div>
+        </div>
+    </section>
+</template>
 
-                <!-- 6. SEO COMPONENT -->
-                <template x-if="sectionType === 'seo' && config.seo_content">
-                    <article class="py-16 px-4">
-                        <div class="max-w-3xl mx-auto p-8 border rounded-2xl" :class="[currentTheme.secondary, currentTheme.border]">
-                            <h2 class="text-2xl font-bold mb-4" :class="currentTheme.text" x-text="config.seo_content.title"></h2>
-                            <p class="opacity-90 leading-relaxed" :class="currentTheme.text" x-html="config.seo_content.body"></p>
-                        </div>
-                    </article>
-                </template>
+<!-- 6. LOCAL SEO GUIDE  -->
+<template x-if="sectionType === 'seo' && config.seo_content">
+    <article class="py-16 px-4">
+        <div class="max-w-4xl mx-auto p-8 md:p-12 rounded-2xl border shadow-lg" 
+             :class="[currentTheme.secondary, currentTheme.border]">
+            
+            <h2 class="text-3xl font-bold mb-8 border-b pb-4" 
+                :class="[currentTheme.text, currentTheme.border]"
+                x-text="config.seo_content.title"></h2>
+            
+            <div class="prose prose-lg max-w-none opacity-90" 
+                 :class="currentTheme.text === 'text-slate-100' ? 'prose-invert' : ''"
+                 x-html="config.seo_content.body">
+            </div>
+            
+        </div>
+    </article>
+</template>
 
             </div> <!-- END WRAPPER -->
         </template> <!-- END LOOP -->
