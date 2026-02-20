@@ -1,18 +1,18 @@
 <!DOCTYPE html>
-<html lang="en" x-data="app()" x-init="init()">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World Cup 2026 Guide</title>
     
-    <!-- 1. 动态 SEO 标题 (已修复：自动根据热点变化) -->
-    <title x-text="getPageTitle()"></title>
-    <meta name="description" content="Daily betting picks, odds, and exclusive bonuses for top sports events.">
-
-    <!-- 核心库 -->
+    <!-- 1. 核心库 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
-
+    
+    <!-- 2. 字体 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    
+    <!-- 3. 样式配置 -->
     <script>
         tailwind.config = {
             theme: {
@@ -26,271 +26,186 @@
     <style>[x-cloak] { display: none !important; }</style>
 </head>
 
-<body class="bg-slate-900 text-white min-h-screen font-sans">
+<!-- 4. 初始化应用 -->
+<body class="bg-slate-900 text-white min-h-screen" x-data="app()">
 
-    <!-- Loading -->
-    <div x-show="loading" class="fixed inset-0 bg-black z-50 flex items-center justify-center transition-opacity duration-500" x-transition.opacity.duration.500ms>
-        <div class="text-green-500 font-mono text-xl animate-pulse">LOADING LATEST ODDS...</div>
-    </div>
+    <!-- 顶部导航 -->
+    <nav class="border-b border-white/10 bg-slate-900/90 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
+            <div class="font-display text-2xl font-bold text-green-500" x-text="data.hero.title"></div>
+            <div class="flex gap-3 text-[10px] font-bold tracking-widest text-gray-400">
+                <span class="border border-white/20 px-2 py-1 rounded">VERIFIED</span>
+                <span class="border border-white/20 px-2 py-1 rounded">SECURE</span>
+            </div>
+        </div>
+    </nav>
 
-    <main x-show="!loading" x-cloak>
+    <!-- 主内容区 -->
+    <main>
         
-        <!-- Navbar -->
-        <nav class="border-b border-white/10 bg-slate-900/90 backdrop-blur sticky top-0 z-40">
-            <div class="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
-                <div class="font-display text-2xl font-bold text-white">
-                    <span class="text-green-500">BET</span>HUB
-                </div>
-                <div class="flex gap-3 text-[10px] font-bold tracking-widest text-gray-400">
-                    <span class="border border-white/20 px-2 py-1 rounded">VERIFIED</span>
-                    <span class="border border-white/20 px-2 py-1 rounded">LIVE</span>
+        <!-- A. HERO (主图) -->
+        <header class="relative py-24 px-4 text-center overflow-hidden border-b border-white/5">
+            <div class="absolute inset-0 z-0">
+                <img :src="data.hero.background_image" class="w-full h-full object-cover opacity-30">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent"></div>
+            </div>
+            <div class="relative z-10 max-w-3xl mx-auto">
+                <h1 class="text-5xl md:text-7xl font-display font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500" 
+                    x-text="data.hero.title"></h1>
+                <p class="text-xl text-gray-300 mb-8" x-text="data.hero.subtitle"></p>
+                <a href="#offers" class="inline-block bg-green-600 hover:bg-green-500 text-white font-bold py-4 px-12 rounded-full shadow-lg shadow-green-900/50 transition-all transform hover:scale-105">
+                    <span x-text="data.hero.cta_text"></span>
+                </a>
+            </div>
+        </header>
+
+        <!-- B. MATCHES (赛事) -->
+        <section class="py-12 px-4 bg-white/5">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-2xl font-display font-bold mb-6 flex items-center gap-2">
+                    <span class="text-green-500">⚽</span> Upcoming Matches
+                </h2>
+                <div class="grid gap-3">
+                    <template x-for="match in data.matches">
+                        <div class="bg-slate-800 p-4 rounded-lg flex flex-col md:flex-row justify-between items-center border border-white/5 hover:border-green-500/30 transition-colors">
+                            <div class="flex items-center gap-4 w-full md:w-auto justify-between md:justify-start">
+                                <div class="text-right w-24 font-bold" x-text="match.team_a"></div>
+                                <div class="px-3 py-1 bg-black rounded text-xs text-gray-500">VS</div>
+                                <div class="text-left w-24 font-bold" x-text="match.team_b"></div>
+                            </div>
+                            <div class="flex items-center gap-4 mt-3 md:mt-0 w-full md:w-auto justify-between">
+                                <div class="text-xs text-gray-400 text-right">
+                                    <div x-text="match.date"></div>
+                                    <div x-text="match.stadium"></div>
+                                </div>
+                                <button class="bg-blue-600 hover:bg-blue-500 px-6 py-2 rounded text-sm font-bold shadow-lg">
+                                    Odds: <span x-text="match.odds"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </template>
                 </div>
             </div>
-        </nav>
+        </section>
 
-        <!-- Dynamic Layout Loop -->
-        <template x-for="section in site.layout_order" :key="section">
-            
-            <!-- 1. HERO (主图与动态标题) -->
-            <template x-if="section === 'hero'">
-                <header class="relative py-24 px-4 text-center overflow-hidden border-b border-white/5">
-                    <div class="absolute inset-0 z-0">
-                        <img :src="site.hero.background_image" class="w-full h-full object-cover opacity-30">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent"></div>
-                    </div>
-                    <div class="relative z-10 max-w-4xl mx-auto">
-                        <!-- 这里的标题会根据 Agent 抓取的热点自动变化 -->
-                        <h1 class="text-5xl md:text-7xl font-display font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500 leading-tight" 
-                            x-text="site.hero.title"></h1>
-                        <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto" x-text="site.hero.subtitle"></p>
-                        <a href="#offers" class="inline-block bg-green-600 hover:bg-green-500 text-white font-bold py-4 px-12 rounded-full shadow-lg shadow-green-900/50 transition-all transform hover:scale-105">
-                            <span x-text="site.hero.cta_text"></span>
-                        </a>
-                    </div>
-                </header>
-            </template>
-
-            <!-- 2. MATCHES (赛事 - 带自动图标) -->
-            <template x-if="section === 'matches' && site.matches && site.matches.length > 0">
-                <section class="py-12 px-4 bg-white/5">
-                    <div class="max-w-4xl mx-auto">
-                        <h2 class="text-3xl font-display font-bold mb-8 text-center flex items-center justify-center gap-3">
-                            <!-- 自动显示 ⚽ 🏀 🥊 -->
-                            <span class="text-4xl" x-text="getSportIcon(site.hero.sport_type)"></span>
-                            <span>Today's Top Picks</span>
-                        </h2>
-                        <div class="grid gap-3">
-                            <template x-for="match in site.matches">
-                                <div class="bg-slate-800 p-4 rounded-lg flex flex-col md:flex-row justify-between items-center border border-white/5 hover:border-green-500/30 transition-colors group">
-                                    <div class="flex items-center gap-4 w-full md:w-auto justify-between md:justify-start">
-                                        <div class="text-right w-32 font-bold truncate" x-text="match.team_a"></div>
-                                        <div class="px-3 py-1 bg-black rounded text-xs text-gray-500 font-mono">VS</div>
-                                        <div class="text-left w-32 font-bold truncate" x-text="match.team_b"></div>
-                                    </div>
-                                    <div class="flex items-center gap-4 mt-3 md:mt-0 w-full md:w-auto justify-between md:justify-end">
-                                        <div class="text-xs text-gray-400 text-right mr-4">
-                                            <div x-text="match.date"></div>
-                                            <div x-text="match.stadium" class="opacity-60"></div>
-                                        </div>
-                                        <button class="bg-blue-600 group-hover:bg-blue-500 px-6 py-2 rounded text-sm font-bold shadow-lg transition-colors whitespace-nowrap">
-                                            Odds: <span x-text="match.odds"></span>
-                                        </button>
+        <!-- C. OFFERS (推广) -->
+        <section id="offers" class="py-16 px-4">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-3xl font-display font-bold mb-8 text-center">🏆 Exclusive Bonuses</h2>
+                <div class="grid gap-6">
+                    <template x-for="(offer, index) in data.offers">
+                        <div class="relative bg-gradient-to-br from-slate-800 to-slate-900 p-1 rounded-2xl">
+                            <div class="absolute -top-3 left-4 bg-yellow-500 text-black text-xs font-bold px-3 py-1 rounded shadow-lg">
+                                #<span x-text="index + 1"></span> RECOMMENDED
+                            </div>
+                            <div class="bg-slate-900 rounded-xl p-6 flex flex-col md:flex-row items-center gap-6 h-full">
+                                <img :src="offer.logo" class="w-20 h-20 object-contain bg-white rounded-lg p-2">
+                                <div class="flex-1 text-center md:text-left">
+                                    <h3 class="text-xl font-bold text-white" x-text="offer.name"></h3>
+                                    <div class="text-2xl font-bold text-green-400 my-1" x-text="offer.bonus"></div>
+                                    <div class="flex flex-wrap gap-2 justify-center md:justify-start">
+                                        <template x-for="tag in offer.tags">
+                                            <span class="text-[10px] uppercase border border-white/10 px-2 py-1 rounded text-gray-400" x-text="tag"></span>
+                                        </template>
                                     </div>
                                 </div>
-                            </template>
+                                <a :href="offer.link" class="w-full md:w-auto bg-white text-black font-bold py-3 px-8 rounded-lg hover:bg-gray-200 text-center transition-transform hover:scale-105">
+                                    CLAIM BONUS
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                </section>
-            </template>
+                    </template>
+                </div>
+            </div>
+        </section>
 
-            <!-- 3. OFFERS (推广) -->
-            <template x-if="section === 'offers' && activeOffers.length > 0">
-                <section id="offers" class="py-16 px-4">
-                    <div class="max-w-5xl mx-auto">
-                        <h2 class="text-3xl font-display font-bold mb-8 text-center">🏆 Exclusive Bonuses</h2>
-                        <div class="grid gap-6">
-                            <template x-for="(offer, index) in activeOffers">
-                                <div class="relative bg-gradient-to-br from-slate-800 to-slate-900 p-1 rounded-2xl border border-white/5 hover:border-green-500/50 transition-all">
-                                    <div class="absolute -top-3 left-4 bg-yellow-500 text-black text-[10px] font-bold px-3 py-1 rounded shadow-lg uppercase tracking-wider">
-                                        Recommended
-                                    </div>
-                                    <div class="bg-slate-900 rounded-xl p-6 flex flex-col md:flex-row items-center gap-6 h-full">
-                                        <img :src="offer.logo" class="w-20 h-20 object-contain bg-white rounded-lg p-2">
-                                        <div class="flex-1 text-center md:text-left">
-                                            <h3 class="text-xl font-bold text-white" x-text="offer.name"></h3>
-                                            <div class="text-2xl font-bold text-green-400 my-1" x-text="offer.bonus"></div>
-                                            <div class="flex flex-wrap gap-2 justify-center md:justify-start">
-                                                <template x-for="tag in offer.tags">
-                                                    <span class="text-[10px] uppercase border border-white/10 px-2 py-1 rounded text-gray-400" x-text="tag"></span>
-                                                </template>
-                                            </div>
-                                        </div>
-                                        <a :href="offer.link" target="_blank" class="w-full md:w-auto bg-white text-black font-bold py-3 px-8 rounded-lg hover:bg-gray-200 text-center transition-transform hover:scale-105">
-                                            CLAIM NOW
-                                        </a>
-                                    </div>
-                                </div>
-                            </template>
+        <!-- D. NEWS (新闻) -->
+        <section class="py-16 px-4 bg-black/20">
+            <div class="max-w-7xl mx-auto">
+                <h2 class="text-3xl font-display font-bold mb-8 text-center">📰 Latest News</h2>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <template x-for="item in data.news">
+                        <article class="bg-slate-800 p-6 rounded-xl border border-white/5 hover:border-green-500/30 transition-all group">
+                            <div class="text-xs text-green-400 mb-2" x-text="item.date"></div>
+                            <h3 class="text-lg font-bold mb-3 leading-tight group-hover:text-green-400 transition-colors" x-text="item.title"></h3>
+                            <p class="text-sm text-gray-400 mb-4 line-clamp-3" x-text="item.excerpt"></p>
+                            <a :href="item.link" class="text-xs font-bold uppercase tracking-widest text-white underline decoration-green-500 decoration-2">Read Full Story</a>
+                        </article>
+                    </template>
+                </div>
+            </div>
+        </section>
+
+        <!-- E. FAQ (问答) -->
+        <section class="py-16 px-4">
+            <div class="max-w-3xl mx-auto">
+                <h2 class="text-3xl font-display font-bold mb-8 text-center">FAQ</h2>
+                <div class="space-y-4">
+                    <template x-for="item in data.faq">
+                        <div class="bg-slate-800/50 p-6 rounded-lg border border-white/5 hover:bg-slate-800 transition-colors">
+                            <h3 class="font-bold text-lg mb-2 text-green-400 flex gap-2">
+                                <span>?</span> <span x-text="item.q"></span>
+                            </h3>
+                            <p class="text-gray-300 text-sm leading-relaxed pl-5 border-l-2 border-white/10" x-text="item.a"></p>
                         </div>
-                    </div>
-                </section>
-            </template>
+                    </template>
+                </div>
+            </div>
+        </section>
 
-            <!-- 4. NEWS (新闻 - 支持跳转) -->
-            <template x-if="section === 'news' && site.news && site.news.length > 0">
-                <section class="py-16 px-4 bg-black/20">
-                    <div class="max-w-7xl mx-auto">
-                        <h2 class="text-3xl font-display font-bold mb-8 text-center">📰 Latest Betting News</h2>
-                        <div class="grid md:grid-cols-3 gap-6">
-                            <template x-for="item in site.news">
-                                <article class="bg-slate-800 p-6 rounded-xl border border-white/5 hover:border-green-500/30 transition-all group flex flex-col h-full">
-                                    <span class="text-xs text-green-400 mb-2 font-mono" x-text="item.date"></span>
-                                    <h3 class="text-lg font-bold mb-3 leading-tight group-hover:text-green-400 transition-colors" x-text="item.title"></h3>
-                                    <p class="text-sm text-gray-400 mb-4 line-clamp-3 flex-1" x-text="item.excerpt"></p>
-                                    <!-- 这里修复了链接跳转 -->
-                                    <a :href="item.link" target="_blank" class="text-xs font-bold uppercase tracking-widest text-white underline decoration-green-500 decoration-2 hover:text-green-400">Read Source &rarr;</a>
-                                </article>
-                            </template>
-                        </div>
-                    </div>
-                </section>
-            </template>
-
-            <!-- 5. FAQ (问答) -->
-            <template x-if="section === 'faq' && site.faq">
-                <section class="py-16 px-4">
-                    <div class="max-w-3xl mx-auto">
-                        <h2 class="text-3xl font-display font-bold mb-8 text-center">FAQ</h2>
-                        <div class="space-y-4">
-                            <template x-for="item in site.faq">
-                                <div class="bg-slate-800/50 p-6 rounded-lg border border-white/5">
-                                    <h3 class="font-bold text-lg mb-2 text-green-400 flex gap-2">
-                                        <span>?</span> <span x-text="item.q"></span>
-                                    </h3>
-                                    <p class="text-gray-300 text-sm leading-relaxed pl-5 border-l-2 border-white/10" x-text="item.a"></p>
-                                </div>
-                            </template>
-                        </div>
-                    </div>
-                </section>
-            </template>
-
-            <!-- 6. PARTNERS (Logo墙) -->
-            <template x-if="section === 'partners' && site.partners">
-                <section class="py-10 border-t border-b border-white/5 opacity-60">
-                    <div class="flex flex-wrap justify-center gap-8 grayscale hover:grayscale-0 transition-all">
-                        <template x-for="logo in site.partners">
-                            <img :src="logo" class="h-8 object-contain">
-                        </template>
-                    </div>
-                </section>
-            </template>
-
-            <!-- 7. SEO (长文) -->
-            <template x-if="section === 'seo' && site.seo_content">
-                <section class="py-16 px-4 bg-white/5">
-                    <div class="max-w-4xl mx-auto prose prose-invert prose-lg" x-html="site.seo_content.body"></div>
-                </section>
-            </template>
-
-        </template> <!-- End Loop -->
-
-        <footer class="py-12 border-t border-white/10 text-center text-xs text-gray-500">
-            &copy; 2026 Sports Betting Guide. 
-            <p class="mt-2">Gambling involves risk. Please gamble responsibly.</p>
+        <!-- F. SEO (长文) -->
+        <section class="py-16 px-4 bg-white/5">
+            <div class="max-w-4xl mx-auto prose prose-invert prose-lg" x-html="data.seo_content.body">
+            </div>
+        </section>
+        
+        <!-- Footer -->
+        <footer class="py-12 border-t border-white/10 text-center">
+            <div class="flex justify-center gap-6 mb-8 opacity-50 grayscale">
+                <template x-for="logo in data.partners">
+                    <img :src="logo" class="h-8 object-contain">
+                </template>
+            </div>
+            <p class="text-xs text-gray-600">© 2026 World Cup Guide. Please Gamble Responsibly.</p>
         </footer>
 
     </main>
 
-    <!-- 逻辑控制 -->
+    <!-- 5. 数据逻辑 (内嵌，无需 fetch) -->
     <script>
         function app() {
             return {
-                loading: true,
-                site: {},
-                activeOffers: [],
-                
-                // 1. 运动图标逻辑
-                getSportIcon(type) {
-                    if (!type) return '⚽';
-                    const t = type.toLowerCase();
-                    if (t.includes('basket')) return '🏀';
-                    if (t.includes('fight') || t.includes('ufc') || t.includes('box')) return '🥊';
-                    if (t.includes('tennis')) return '🎾';
-                    if (t.includes('foot') || t.includes('nfl')) return '🏈';
-                    return '⚽';
-                },
-
-                // 2. 动态页面标题逻辑
-                getPageTitle() {
-                    if (this.site && this.site.hero) {
-                        return this.site.hero.title + " | Daily Betting Odds";
-                    }
-                    return "Loading Odds...";
-                },
-
-                async init() {
-                    // 3. 内置兜底数据 (安全网)
-                    // 如果 fetch 失败，或者 JSON 还没生成，会显示这个，保证不白屏
-                    const defaultSite = {
-                        hostname: "default",
-                        layout_order: ["hero", "matches", "offers", "news", "faq", "partners", "seo"],
-                        hero: {
-                            title: "Daily Sports Betting Hub",
-                            subtitle: "Live Odds, Predictions & Exclusive Bonuses",
-                            cta_text: "View Offers",
-                            sport_type: "soccer",
-                            background_image: "https://images.unsplash.com/photo-1522770179533-24471fcdba45?auto=format&fit=crop&w=1920&q=80"
-                        },
-                        matches: [
-                            { team_a: "Waiting for Data...", team_b: "Updating...", date: "Today", stadium: "-", odds: "- / -" }
-                        ],
-                        offer_ids: ["1win_mx", "stake_global"],
-                        news: [],
-                        faq: [],
-                        partners: [],
-                        seo_content: { body: "<p>Loading SEO content...</p>" }
-                    };
-
-                    try {
-                        // 4. 尝试远程读取 (带时间戳防缓存)
-                        const [sitesRes, offersRes] = await Promise.all([
-                            fetch('./sites.json?t=' + Date.now()),
-                            fetch('./offers.json?t=' + Date.now())
-                        ]);
-
-                        if (!sitesRes.ok || !offersRes.ok) throw new Error("Fetch failed");
-
-                        const allSites = await sitesRes.json();
-                        const allOffers = await offersRes.json();
-
-                        // 5. 匹配域名
-                        let hostname = window.location.hostname;
-                        // 本地调试强制逻辑
-                        if (hostname.includes('localhost') || hostname.includes('127.0.0.1')) {
-                            // 这里可以改成 sites.json 里存在的任意一个域名来测试
-                            hostname = allSites[0].hostname; 
-                        }
-
-                        // 6. 找到配置 (找不到就用第一个，再找不到就用 defaultSite)
-                        this.site = allSites.find(s => s.hostname === hostname) || allSites[0] || defaultSite;
-                        
-                        // 7. 匹配 Offer
-                        this.activeOffers = (this.site.offer_ids || [])
-                            .map(id => allOffers.find(o => o.id === id))
-                            .filter(Boolean);
-
-                        // 如果 offer 为空，填充假数据测试
-                        if (this.activeOffers.length === 0 && defaultSite.offer_ids) {
-                             // 尝试从 offers.json 拿前两个
-                             this.activeOffers = allOffers.slice(0, 2);
-                        }
-
-                    } catch (e) {
-                        console.warn("Using fallback data:", e);
-                        this.site = defaultSite;
-                    } finally {
-                        this.loading = false;
+                // 这里是硬编码的数据，绝对不会加载失败
+                data: {
+                    hero: {
+                        title: "Apuestas Mundial 2026",
+                        subtitle: "The Ultimate Guide for Betting in Mexico & USA",
+                        cta_text: "View Exclusive Offers",
+                        background_image: "https://images.unsplash.com/photo-1522770179533-24471fcdba45?auto=format&fit=crop&w=1920&q=80"
+                    },
+                    matches: [
+                        { team_a: "Mexico", team_b: "Brazil", date: "June 12", stadium: "Estadio Azteca", odds: "3.50" },
+                        { team_a: "USA", team_b: "England", date: "June 13", stadium: "MetLife Stadium", odds: "2.10" }
+                    ],
+                    offers: [
+                        { name: "1win Official", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/100px-React-icon.svg.png", link: "#", bonus: "500% Welcome Bonus", tags: ["Crypto", "Instant"] },
+                        { name: "Stake Casino", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/100px-React-icon.svg.png", link: "#", bonus: "$1000 VIP Bonus", tags: ["High Roller", "Global"] }
+                    ],
+                    news: [
+                        { title: "Mexico Squad Announced", date: "Today", excerpt: "The final roster is here...", link: "#" },
+                        { title: "Betting Odds Update", date: "Yesterday", excerpt: "Brazil remains the favorite...", link: "#" },
+                        { title: "Stadium Guide", date: "2 days ago", excerpt: "How to get to Azteca...", link: "#" }
+                    ],
+                    faq: [
+                        { q: "Is online betting legal?", a: "Yes, using licensed offshore sites like 1win is safe." },
+                        { q: "How to deposit?", a: "Use Crypto or Local Bank Transfers." }
+                    ],
+                    partners: [
+                        "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/200px-Mastercard-logo.svg.png",
+                        "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/PayPal.svg/200px-PayPal.svg.png"
+                    ],
+                    seo_content: {
+                        body: "<h3>Official Betting Guide 2026</h3><p>This is the definitive guide for betting on the World Cup. We provide the best odds, secure links, and daily news updates.</p>"
                     }
                 }
             }
