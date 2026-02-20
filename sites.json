@@ -3,16 +3,18 @@
     "hostname": "mx.worldcup-guide.com",
     "topic": "World Cup 2026",
     "geo": "Mexico",
-    "offer_ids": ["1win_global"],
-    "seo_title": "Apuestas Mundial 2026 - Guía Oficial México",
-    "seo_desc": "Las mejores cuotas para México en el Mundial 2026.",
+    "offer_ids": [
+      "1win_global"
+    ],
+    "seo_title": "Apuestas Mundial 2026 - Gu\u00eda Oficial M\u00e9xico",
+    "seo_desc": "Las mejores cuotas para M\u00e9xico en el Mundial 2026.",
     "hero": {
       "title": "Mundial 2026 En Vivo",
-      "subtitle": "Noticias y Apuestas Seguras en México",
+      "subtitle": "Noticias y Apuestas Seguras en M\u00e9xico",
       "cta": "Ver Bonos",
       "bg_image": "https://images.unsplash.com/photo-1518091043644-c1d4457512c6"
     },
-    "matches": [], 
+    "matches": [],
     "news": [],
     "seo_article": "<p>Waiting for Agent...</p>"
   },
@@ -20,7 +22,10 @@
     "hostname": "crypto-bet.net",
     "topic": "Champions League",
     "geo": "Global",
-    "offer_ids": ["1win_global", "stake_us"],
+    "offer_ids": [
+      "1win_global",
+      "stake_us"
+    ],
     "seo_title": "Crypto Betting - Champions League",
     "seo_desc": "Bet with BTC/USDT on top football matches.",
     "hero": {
