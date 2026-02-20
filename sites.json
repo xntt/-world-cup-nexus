@@ -1,74 +1,36 @@
 [
   {
     "hostname": "mx.worldcup-guide.com",
-    "layout_order": [
-      "hero",
-      "matches",
-      "offers",
-      "seo",
-      "news",
-      "partners"
-    ],
+    "topic": "World Cup 2026",
+    "geo": "Mexico",
+    "offer_ids": ["1win_global"],
+    "seo_title": "Apuestas Mundial 2026 - Guía Oficial México",
+    "seo_desc": "Las mejores cuotas para México en el Mundial 2026.",
     "hero": {
-      "title": "Apuestas Mundial 2026",
-      "subtitle": "La mejor gu\u00eda para apostar en M\u00e9xico",
-      "cta_text": "Ver Ofertas",
-      "background_image": "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=1920&q=80"
+      "title": "Mundial 2026 En Vivo",
+      "subtitle": "Noticias y Apuestas Seguras en México",
+      "cta": "Ver Bonos",
+      "bg_image": "https://images.unsplash.com/photo-1518091043644-c1d4457512c6"
     },
-    "offer_ids": [
-      "1win_mx",
-      "stake_global"
-    ],
-    "matches": [
-      {
-        "team_a": "Mexico",
-        "team_b": "Brazil",
-        "date": "June 12",
-        "odds": "3.50"
-      },
-      {
-        "team_a": "USA",
-        "team_b": "England",
-        "date": "June 13",
-        "odds": "2.10"
-      }
-    ],
-    "news": [
-      {
-        "title": "Real News for MX - Update 1",
-        "date": "Just Now",
-        "excerpt": "This is a real news item fetched from RSS...",
-        "link": "https://www.espn.com/soccer/"
-      },
-      {
-        "title": "Real News for MX - Update 2",
-        "date": "1 Hour ago",
-        "excerpt": "Another update about the World Cup teams...",
-        "link": "https://www.espn.com/soccer/"
-      },
-      {
-        "title": "Real News for MX - Update 3",
-        "date": "2 Hours ago",
-        "excerpt": "Betting odds are shifting rapidly...",
-        "link": "https://www.espn.com/soccer/"
-      }
-    ],
-    "faq": [
-      {
-        "q": "\u00bfEs legal apostar en 1win?",
-        "a": "S\u00ed, es completamente legal y seguro."
-      },
-      {
-        "q": "\u00bfC\u00f3mo deposito dinero?",
-        "a": "Puedes usar OXXO o SPEI para dep\u00f3sitos instant\u00e1neos."
-      }
-    ],
-    "partners": [
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/200px-Mastercard-logo.svg.png",
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/PayPal.svg/200px-PayPal.svg.png"
-    ],
-    "seo_content": {
-      "body": "<h3>Best Betting Guide 2026</h3><p>This is the definitive guide for Mexican players. We cover all aspects of the World Cup.</p>"
-    }
+    "matches": [], 
+    "news": [],
+    "seo_article": "<p>Waiting for Agent...</p>"
+  },
+  {
+    "hostname": "crypto-bet.net",
+    "topic": "Champions League",
+    "geo": "Global",
+    "offer_ids": ["1win_global", "stake_us"],
+    "seo_title": "Crypto Betting - Champions League",
+    "seo_desc": "Bet with BTC/USDT on top football matches.",
+    "hero": {
+      "title": "Crypto Sports Betting",
+      "subtitle": "Instant Withdrawals & High Limits",
+      "cta": "Start Betting",
+      "bg_image": "https://images.unsplash.com/photo-1621416894569-0f39ed31d247"
+    },
+    "matches": [],
+    "news": [],
+    "seo_article": "<p>Waiting for Agent...</p>"
   }
 ]
