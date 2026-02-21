@@ -1,37 +1,65 @@
-name: Auto-Updater for Agent Website
+name: Ultimate Auto-Deploy Network
 
 on:
+  push:
+    branches: [ main ]
   schedule:
-    - cron: '0 0 * * *' 
-  workflow_dispatch: 
+    - cron: '0 0 * * *' # 每天自动刷新动态内容
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: 📥 Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Python
+      - name: 🐍 Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      - name: Install dependencies
+      - name: 📦 Install Python Dependencies
         run: pip install -r requirements.txt
 
-      - name: Run Main Engine
+      - name: 🧠 Run AI Content Engine (Generate Sites)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python manage.py
 
-      - name: Commit and Push dist folder to Github
+      - name: ☁️ Install Cloudflare Wrangler
+        run: npm install -g wrangler
+
+      - name: 🚀 Auto Deploy & Bind Domians to Cloudflare
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
         run: |
-          git config --global user.name 'pSEO-Bot'
-          git config --global user.email 'bot@pseo.com'
-          git add dist/
-          git commit -m "🚀 Auto-updated sites: news, odds, SEO articles" || echo "No changes to commit"
-          git push
+          cd dist
+          for SITE in */; do
+            # 1. 提取网址，比如 mx.worldcup-guide.com
+            SITE=${SITE%/}
+            
+            # 2. 生成符合 Cloudflare 规范的项目名 (把点替换成短横线)
+            PROJECT_NAME=${SITE//./-} 
+            
+            echo "==========================================="
+            echo "🚀 正在全自动部署: $SITE"
+            echo "==========================================="
+
+            # 3. 自动创建 Cloudflare Pages 项目 (如果有了会自动跳过)
+            wrangler pages project create "$PROJECT_NAME" --production-branch main || echo "✅ 项目已存在"
+
+            # 4. 直接把文件推送到该项目
+            wrangler pages deploy "$SITE" --project-name "$PROJECT_NAME"
+
+            # 5. 黄金操作：调用 API 自动绑定你的专属子域名！
+            # 如果你的域名由 CF 管理，CF 还会自动帮你把 DNS CNAME 记录加上去，0人工干预！
+            curl -s -X POST "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects/$PROJECT_NAME/domains" \
+              -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d '{"name":"'"$SITE"'"}'
+          done
