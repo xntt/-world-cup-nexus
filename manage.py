@@ -1,119 +1,66 @@
 import json
 import os
-import urllib.parse
-import feedparser
 import google.generativeai as genai
-from jinja2 import Environment, FileSystemLoader
-import time
-import random
+from jinja2 import Template
+import markdown
 
-genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
+# 1. 唤醒大模型 (请确保 Github Actions 的 Secrets 里面存了 GEMINI_API_KEY)
+# 这里用的是完全免费的 Gemini 模型，速度极快
+api_key = os.environ.get("GEMINI_API_KEY")
+if not api_key:
+    print("❌ 警告: 没有找到 GEMINI_API_KEY，将生成无 AI 内容的占位页面。")
+else:
+    genai.configure(api_key=api_key)
 
-def get_google_news_rss(topic, geo):
-    """动态获取最新的真实世界新闻"""
-    encoded_topic = urllib.parse.quote(topic)
-    geo_code = "MX" if "Mexico" in geo else "US" 
-    return f"https://news.google.com/rss/search?q={encoded_topic}&hl=en-{geo_code}&gl={geo_code}"
+model = genai.GenerativeModel('gemini-1.5-flash')
 
-def fetch_ai_content(site_config):
-    topic = site_config.get('topic', 'Sports')
-    lang = site_config.get('lang', 'en')
-    geo = site_config.get('geo', 'Global')
-    
-    # 1. 抓取 RSS 喂给 AI
-    rss_url = get_google_news_rss(topic, geo)
-    feed = feedparser.parse(rss_url)
-    
-    news_titles = [entry.title for entry in feed.entries[:5]]
-    news_context = "\n".join([f"- {title}" for title in news_titles])
-    
-    if not news_context:
-        news_context = f"General updates and predictions regarding {topic} in {geo}."
+# 2. 读取配置和模板
+with open('sites.json', 'r', encoding='utf-8') as f:
+    sites = json.load(f)
 
-    model = genai.GenerativeModel('gemini-1.5-flash', generation_config={"response_mime_type": "application/json"})
-    
-    prompt = f"""
-    You are an expert SEO Content Creator and Betting Analyst.
-    Target Audience: {geo}. Language MUST BE: {lang}. Topic: {topic}.
-    
-    Latest real news context:
-    {news_context}
+with open('template.html', 'r', encoding='utf-8') as f:
+    template_str = f.read()
+template = Template(template_str)
 
-    Return strictly in this JSON format:
-    {{
-      "news": [
-        {{"title": "Translating exciting headline to {lang}", "excerpt": "2 sentences SEO rich summary"}} // Generate 4 items
-      ],
-      "matches": [
-        {{"team_a": "Entity 1", "team_b": "Entity 2", "date": "Tomorrow", "odds": "+150 or 2.50"}} // Generate 3 trending matchups
-      ],
-      "faq": [
-        {{"q": "Popular question about {topic}", "a": "Detailed answer matching search intent"}} // Generate 3 items
-      ],
-      "seo_article": "<h2>SEO optimized H2 Title</h2><p>A professional, engaging 300+ word article analyzing the current news context. Use <strong>, <ul> and other HTML tags.</p>"
-    }}
-    """
-    
-    # 容错机制设计：如果大模型罢工，网站内容不能空，使用兜底数据
-    fallback_data = {
-        "news": [{"title": f"Latest Updates on {topic}", "excerpt": "We are gathering the newest information. Please check back shortly for full updates."}],
-        "matches": [{"team_a": "TBD", "team_b": "TBD", "date": "Soon", "odds": "-"}],
-        "faq": [{"q": "How to start betting?", "a": "Choose a trusted platform from our recommended list above and sign up."}],
-        "seo_article": f"<h2>Guide to {topic}</h2><p>Stay tuned for our deep-dive analysis and expert predictions...</p>"
-    }
+# 3. 循环为每个网站生成定制化内容
+for site in sites:
+    hostname = site['hostname']
+    print(f"[{hostname}] ⚙️ 正在生成站点...")
 
-    try:
-        resp = model.generate_content(prompt)
-        ai_data = json.loads(resp.text)
-        
-        # 验证返回的 JSON 结构是否完整
-        if "news" in ai_data and "seo_article" in ai_data:
-            return ai_data
-        return fallback_data
-    except Exception as e:
-        print(f"⚠️ AI Generation Error for {topic}: {e} -> Using Fallback Data.")
-        return fallback_data
+    ai_html_content = "<p>Coming soon...</p>" # 默认占位内容
 
-def build_sites():
-    print("🚀 Starting the pSEO Engine...")
-    
-    try:
-        with open('sites.json', 'r', encoding='utf-8') as f:
-            sites = json.load(f)
-    except Exception as e:
-        print(f"❌ Error loading sites.json: {e}")
-        return
-
-    env = Environment(loader=FileSystemLoader('.'))
-    template = env.get_template('template.html')
-
-    for site in sites:
-        hostname = site['hostname']
-        print(f"⏳ Processing Website: {hostname}")
-        
-        # 1. 抓取 AI 动态内容
-        ai_data = fetch_ai_content(site)
-        
-        # 2. 将 settings 与 ai_data 合并注入模板
-        context = {**site, "ai_data": ai_data}
-        
+    # 4. 指挥 AI 自动写 SEO 文章 (关键点：针对该国家的语言和话题)
+    if api_key:
+        prompt = f"""
+        You are an expert sports journalist and SEO copywriter.
+        Write a highly engaging, 3-paragraph article about "{site['topic']}".
+        Target Audience Geo: {site['geo']}
+        Language: {site['lang']}
+        Include: Latest odds, predictions, and tips. Use H3 tags for subheadings.
+        Format strictly in Markdown. Do not include a main H1 title.
+        """
         try:
-            html_content = template.render(context)
-            
-            output_dir = f"dist/{hostname}"
-            os.makedirs(output_dir, exist_ok=True)
-            
-            with open(f"{output_dir}/index.html", 'w', encoding='utf-8') as f:
-                f.write(html_content)
-                
-            print(f"✅ SUCCESS: Built {output_dir}/index.html")
-            
+            print(f"[{hostname}] 🤖 正在请求 AI 撰写关于 {site['topic']} ({site['lang']}) 的原创文章...")
+            response = model.generate_content(prompt)
+            # 将 AI 生成的 Markdown 转成 HTML，以便放进网页
+            ai_html_content = markdown.markdown(response.text)
+            print(f"[{hostname}] ✅ AI 文案生成成功！")
         except Exception as e:
-            print(f"❌ Error rendering HTML for {hostname}: {e}")
-            
-        time.sleep(random.randint(2, 5)) # API 速率保护，防止被封 IP 或限制
+            print(f"[{hostname}] ❌ AI 生成失败: {e}")
 
-    print("🎉 All websites generated successfully in 'dist' folder!")
+    # 5. 把配置和 AI 内容渲染到 HTML 模板中
+    final_html = template.render(
+        site=site,
+        ai_content=ai_html_content
+    )
 
-if __name__ == "__main__":
-    build_sites()
+    # 6. 保存为静态网站文件
+    output_dir = f"dist/{hostname}"
+    os.makedirs(output_dir, exist_ok=True)
+    
+    with open(f"{output_dir}/index.html", "w", encoding='utf-8') as f:
+        f.write(final_html)
+    
+    print(f"[{hostname}] 🎉 静态文件生成完毕存放于: {output_dir}/index.html\n")
+
+print("🚀 所有站点自动部署构建完成！")
