@@ -1,52 +1,64 @@
 [
   {
     "hostname": "mx.worldcup-guide.com",
-    "topic": "Liga MX & World Cup 2026",
+    "topic": "World Cup 2026 and Liga MX",
     "geo": "Mexico",
     "lang": "es",
-    "seo_title": "Mejores Apuestas Mundial 2026 y Liga MX",
-    "seo_desc": "Noticias, cuotas y bonos exclusivos en criptomonedas para México.",
+    "seo_title": "Apuestas Mundial 2026 - Guía Oficial México",
+    "seo_desc": "Las mejores cuotas y noticias para México en el Mundial 2026. Bonos exclusivos en criptomonedas.",
     "contact": {
-      "telegram": "https://t.me/your_mexico_channel",
-      "email": "contact@worldcup-guide.com"
+      "telegram": "https://t.me/latam_betting",
+      "email": "mx@worldcup-guide.com"
     },
     "hero": {
-      "title": "Mundial 2026 En Vivo",
-      "subtitle": "Gana con las mejores cuotas y retiros instantáneos en Crypto",
+      "title": "Mundial 2026 México",
+      "subtitle": "Noticias en vivo y Retiros Instantáneos en Cripto 🚀",
       "cta_text": "Reclamar Bono Ahora",
       "bg_image": "https://images.unsplash.com/photo-1518091043644-c1d4457512c6?auto=format&fit=crop&w=1920&q=80"
     },
     "affiliates": {
       "casinos": [
         {
-          "name": "1win", 
+          "name": "1win (MX)", 
           "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/100px-React-icon.svg.png", 
-          "bonus": "500% Welcome Bonus", 
-          "link": "https://your-1win-affiliate-link.com", 
-          "tags": ["Crypto", "Instant Payout"]
-        },
-        {
-          "name": "Stake", 
-          "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/100px-React-icon.svg.png", 
-          "bonus": "VIP Rakeback", 
-          "link": "https://your-stake-affiliate-link.com", 
-          "tags": ["No KYC", "Global"]
+          "bonus": "500% Bono de Bienvenida", 
+          "link": "https://tu-enlace-mx.com", 
+          "tags": ["Crypto", "Pagos Rápidos"]
         }
       ],
-      "crypto": [
+      "crypto": [{"name": "Binance", "desc": "Compra USDT Básico", "link": "#"}],
+      "vpn": [{"name": "NordVPN", "desc": "Desbloquea Casinos", "link": "#"}]
+    }
+  },
+  {
+    "hostname": "usa.worldcup-guide.com",
+    "topic": "World Cup 2026 USMNT",
+    "geo": "USA",
+    "lang": "en",
+    "seo_title": "US Sports Betting Guide: World Cup 2026",
+    "seo_desc": "Latest USMNT odds, predictions, and betting news. High limits & crypto accepted.",
+    "contact": {
+      "telegram": "https://t.me/usa_betting",
+      "email": "usa@worldcup-guide.com"
+    },
+    "hero": {
+      "title": "USA World Cup Betting",
+      "subtitle": "High Limits, Fast Payouts & Crypto Accepted 🇺🇸",
+      "cta_text": "Claim Welcome Bonus",
+      "bg_image": "https://images.unsplash.com/photo-1566577739112-5180d4bf9390?auto=format&fit=crop&w=1920&q=80"
+    },
+    "affiliates": {
+      "casinos": [
         {
-          "name": "Binance", 
-          "desc": "Buy USDT instantly with Credit Card", 
-          "link": "https://accounts.binance.com/register?ref=YOUR_REF"
+          "name": "Bovada (US)", 
+          "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/100px-React-icon.svg.png", 
+          "bonus": "$750 Crypto Bonus", 
+          "link": "https://your-usa-link.com", 
+          "tags": ["No KYC", "US Players Welcome"]
         }
       ],
-      "vpn": [
-        {
-          "name": "NordVPN", 
-          "desc": "Unblock ANY Casino globally", 
-          "link": "https://go.nordvpn.net/aff_c?offer_id=YOUR_OFFER"
-        }
-      ]
+      "crypto": [{"name": "Coinbase", "desc": "Buy BTC easily", "link": "#"}],
+      "vpn": [{"name": "ExpressVPN", "desc": "Secure Betting", "link": "#"}]
     }
   }
 ]
